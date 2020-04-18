@@ -16,9 +16,14 @@ print('Индекс первого упоминание элемента "a" = {
       .format(main_string.find('а')))
 print('Индекс первого упоминание подстроки "друг" начиная с 70 элемент\
 а исходной строки = {}'.format(main_string.index('друг', 70)))
-print(f'Все символы в строке строчные - {main_string.islower()}')
+print(f'Все символы в строке строчные? - {main_string.islower()}')
 print('Каждый символ строки разделен пробелом: {}'
       .format(' '.join(main_string)))
 dictionary = str.maketrans({'Л': 'L', 'д': 'd'})
-print('Замена символов "Л" на "L", "д" на "d": {}'.format(main_string.translate(dictionary)))
-print('Замена слова "друг" на "friend": {}'.format(main_string.replace('друг', 'friend')))
+print('Замена символов "Л" на "L", "д" на "d": {}'
+      .format(main_string.translate(dictionary)))
+print('Замена слова "друг" на "friend": {}'
+      .format(main_string.replace('друг', 'friend')))
+print('Замена строчных букв на прописные и наоборот: {}'
+      .format(main_string.swapcase()))
+print(f'Все символы в строке строчные: {main_string.lower()}')
