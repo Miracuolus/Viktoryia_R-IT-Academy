@@ -9,9 +9,10 @@ except ValueError:
     print('1) Нет нулевых значений')
 
 
-(value_1 == 0 or print(f'2) {value_1}')) and (value_2 == 0 or\
-    print(f'2) {value_2}')) and (value_3 == 0 or\
-        print(f'2) {value_3}')) and print('2) Введены все нули')
+(value_1 == 0 or print(f'2) {value_1}')) and\
+    (value_2 == 0 or print(f'2) {value_2}')) and\
+    (value_3 == 0 or print(f'2) {value_3}')) and\
+    print('2) Введены все нули')
 
 if value_1 > (value_2 + value_3):
     print(f'3) {value_1 - value_2 - value_3}')
