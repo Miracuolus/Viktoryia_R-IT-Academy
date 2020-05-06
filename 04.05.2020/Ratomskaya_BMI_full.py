@@ -1,39 +1,9 @@
-class person:
-    def __init__(self, second_name, name, father_name, height, mass, age):
-        self.__second_name = second_name
-        self.__name = name
-        self.__father_name = father_name
-        self.__height = height
-        self.__mass = mass
-        self.__age = age
-
-    def __str__(self):
-        format_string = '{} {} {}: рост = {}, вес = {}, возраст = {}'
-        return format_string.format(self.__second_name, self.__name,\
-            self.__father_name, self.__height, self.__mass, self.__age)
-        
-    def get_height(self):
-        return self.__height
-
-    def set_height(self, height):
-        self.__height = height
-
-    def get_mass(self):
-        return self.__mass
-
-    def set_mass(self, mass):
-        self.__mass = mass
-
-    def get_age(self):
-        return self.__age
-
-    def set_age(self, age):
-        self.__age = age
-        
+from Person import *
 
 def get_bmi(mass, height):
     """Возвращает индекс массы тела"""
     return mass/(height/100)**2
+
 
 min_index = 16
 max_index = 40
@@ -44,14 +14,33 @@ def print_scale(index):
     index = max(min(round(index), max_index), min_index)
     left = index - min_index
     right = max_index - index
-    print(str(min_index) + '=' * left + '|' + '=' * right + str(max_index))
+    print(str(min_index) + '=' * left + '|' + '=' * right + \
+        str(max_index))
+
+exit = ''
+while exit.lower() != 'exit':
+    family_name = input('Введите фамилию: ')
+    name = input('Введите имя: ')
+    father_name = input('Введите отчество: ')
+    try:
+        height = int((input('Введите рост в cм: ')))
+        mass = float((input('Введите массу тела в кг: ')))
+        age = int(input('Введите количество полных лет: '))
+        person = Person(family_name, name, father_name, height, mass, age)
+        print(person)
+        body_index = get_bmi(mass, height)
+        print(f'{person.get_name()}, Ваш индекс массы тела: {round(body_index, 2)}')
+        print_scale(body_index)
+    except ValueError:
+        print('*Ошибка! В полях "Рост", "Вес", и "Возраст" необходимо'
+            'вводить числовые значения')
+    except InvalidHeight:
+        print('*Ошибка! Введите реальное значение роста')
+    except InvalidMass:
+        print('*Ошибка! Введите реальное значение веса')
+    except InvalidAge:
+        print('*Ошибка! Введите реальное значение возраста')
+
+    exit = input('Если хотите выйти из программы, то введите exit: ')
 
 
-try:
-    mass = float((input('Введите массу тела в кг: ')))
-    height = int((input('Введите рост в cм: ')))
-    body_index = get_bmi(mass, height)
-    print(f'Ваш индекс массы тела: {round(body_index, 2)}')
-    print_scale(body_index)
-except ValueError:
-    print('*Ошибка! Необходимо вводить данные в числовых значениях')
