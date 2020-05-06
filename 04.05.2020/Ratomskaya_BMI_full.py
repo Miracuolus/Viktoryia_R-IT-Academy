@@ -1,4 +1,7 @@
 from Person import *
+class InvalidName(Exception):
+    """Класс вызова исключения при некорректном ФИО"""
+    pass
 
 def get_bmi(mass, height):
     """Возвращает индекс массы тела"""
@@ -48,31 +51,44 @@ def recomendation(person):
         print(f'{person.get_name()}, у Вас нормальный вес')
         print('Рекомендации вам не требуются.')
 
+def check_names(name):
+    """Функция для определения валидности полей ФИО"""
+    if name == '' or name == ' '*len(name):
+        raise InvalidName
+        
+people = []
 exit = ''
 while exit.lower() != 'exit':
-    family_name = input('Введите фамилию: ')
-    name = input('Введите имя: ')
-    father_name = input('Введите отчество: ')
     try:
+        family_name = input('Введите фамилию: ')
+        check_names(family_name) # проверка на валидность поля
+        name = input('Введите имя: ')
+        check_names(name) # проверка на валидность поля
+        father_name = input('Введите отчество: ')
+        check_names(father_name) # проверка на валидность поля
         height = int((input('Введите рост в cм: ')))
         mass = float((input('Введите массу тела в кг: ')))
         age = int(input('Введите количество полных лет: '))
         person = Person(family_name, name, father_name, height, mass, age)
         print(person)
-        body_index = get_bmi(person.get_mass(), person.get_height())
+        body_index = get_bmi(person.get_mass(), person.get_height()) # расчет индекса массы тела
         print(f'{person.get_name()}, Ваш индекс массы тела: {round(body_index, 2)}')
-        print_scale(body_index)
+        print_scale(body_index) # вывод шкалы
         recomendation(person)
     except ValueError:
         print('*Ошибка! В полях "Рост", "Вес", и "Возраст" необходимо'
             'вводить числовые значения')
+    except InvalidName:
+        print('*Ошибка! Поле ФИО не должно быть пустым или содержать пробелы')
     except InvalidHeight:
         print(f'*Ошибка! Некорректное значение роста: {height}')
     except InvalidMass:
         print(f'*Ошибка! Некорректное значение веса: {mass}')
     except InvalidAge:
         print(f'*Ошибка! Некорректное значение возраста: {age}')
-
+    
+    people.append(person) # если все поля валидные, то добавляем пользователя в список
     exit = input('Если хотите выйти из программы, то введите exit: ')
+
 
 
