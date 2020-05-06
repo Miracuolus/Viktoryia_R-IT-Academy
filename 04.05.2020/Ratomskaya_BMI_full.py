@@ -17,24 +17,36 @@ def print_scale(index):
     print(str(min_index) + '=' * left + '|' + '=' * right + \
         str(max_index))
 
-def recomendation(index):
+def recomendation(person):
     """Рекомендации по результатам расчета ИМТ"""
-    if index < 16:
+    body_index = get_bmi(person.get_mass(), person.get_height()) 
+    if (body_index < 16) and (person.get_age() >= 13):
         print(f'{person.get_name()}, у Вас выраженный дефицит массы тела')
-    elif 16 <= body_index <= 18.49:
+        print('Вам следует обратиться к врачу.')
+    elif (16 <= body_index <= 18.49):
         print(f'{person.get_name()}, у Вас недостаточная масса тела')
-    elif 18.5 <= body_index <= 24.99:
+        print('Для нормализации веса важен полноценный отдых, правильное '
+        'питание, умеренная физическую активность.')
+    elif (18.5 <= body_index <= 24.99) and (19 <= person.get_age() <= 24):
         print(f'{person.get_name()}, у Вас нормальный вес')
+        print('Рекомендации вам не требуются.')
     elif 25 <= body_index <= 29.99:
         print(f'{person.get_name()}, у Вас предожирение')
-    elif 30 <= body_index <= 34.99:
-        print(f'{person.get_name()}, у Вас ожирение 1-ой степени')
-    elif 35 <= body_index <= 39.99:
-        print(f'{person.get_name()}, у Вас ожирение 2-ой степени')
-    elif body_index >= 40:
-        print(f'{person.get_name()}, у Вас ожирение 3-ой степени')
+        print('Вам следует отказаться от избыточного потребления пищи,\n'
+        'заняться физической акттивностью, следить за своим '
+        'психоэмоциональным состоянием.')
+    elif body_index >= 30:
+        if 30 <= body_index <= 34.99:
+            print(f'{person.get_name()}, у Вас ожирение 1-ой степени')
+        elif 35 <= body_index <= 39.99:
+            print(f'{person.get_name()}, у Вас ожирение 2-ой степени')
+        elif body_index >= 40:
+            print(f'{person.get_name()}, у Вас ожирение 3-ой степени')
+        print('Вам следует обратиться к врачу, который подберет вам '
+        'методику решения проблемы с ожирением.')
     else:
         print(f'{person.get_name()}, у Вас нормальный вес')
+        print('Рекомендации вам не требуются.')
 
 exit = ''
 while exit.lower() != 'exit':
@@ -47,10 +59,10 @@ while exit.lower() != 'exit':
         age = int(input('Введите количество полных лет: '))
         person = Person(family_name, name, father_name, height, mass, age)
         print(person)
-        body_index = get_bmi(mass, height)
+        body_index = get_bmi(person.get_mass(), person.get_height())
         print(f'{person.get_name()}, Ваш индекс массы тела: {round(body_index, 2)}')
         print_scale(body_index)
-        recomendation(body_index)
+        recomendation(person)
     except ValueError:
         print('*Ошибка! В полях "Рост", "Вес", и "Возраст" необходимо'
             'вводить числовые значения')
