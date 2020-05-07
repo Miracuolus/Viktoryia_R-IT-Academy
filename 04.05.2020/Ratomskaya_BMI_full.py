@@ -8,17 +8,44 @@ class InvalidAction(Exception):
     чисел, кроме 1, 2, 3, 4"""
     pass
 
-def create_names(second_name, name, father_name):
+class InvalidNumberPerson(Exception):
+    """Класс вызова исключения при вводе несуществующего номера пользователя"""
     pass
+
+def check_action(action):
+    if action <= 0 or action >= 5:
+        raise InvalidAction
+
+def check_names(name):
+    """Функция для определения валидности полей ФИО"""
+    cut_name = name.lstrip()
+    #if name == '' or name == ' '*len(name):
+    if cut_name == '':
+        raise InvalidName
+
+def create_names():
+    """Функция ввода ФИО"""
+    family_name = input('Введите фамилию: ')
+    check_names(family_name)
+    name = input('Введите имя: ')
+    check_names(name)
+    father_name = input('Введите отчество: ')
+    check_names(father_name)
+    return (father_name, name, father_name)
+
+def create_params():
+    """Функция ввода параметров пользователя"""
+    height = int((input('Введите рост в cм: ')))
+    mass = float((input('Введите массу тела в кг: ')))
+    age = int(input('Введите количество полных лет: '))
+    return(height, mass, age)
 
 def get_bmi(mass, height):
     """Возвращает индекс массы тела"""
     return mass/(height/100)**2
 
-
 min_index = 16
 max_index = 40
-
 
 def print_scale(index):
     """Выводит индекс массы тела в виде шкалы"""
@@ -37,7 +64,7 @@ def recomendation(person):
     elif (16 <= body_index <= 18.49):
         print(f'{person.get_name()}, у Вас недостаточная масса тела')
         print('Для нормализации веса важен полноценный отдых, правильное '
-        'питание, умеренная физическую активность.')
+        'питание, умеренная физическая активность.')
     elif (18.5 <= body_index <= 24.99) and (19 <= person.get_age() <= 24):
         print(f'{person.get_name()}, у Вас нормальный вес')
         print('Рекомендации вам не требуются.')
@@ -59,70 +86,83 @@ def recomendation(person):
         print(f'{person.get_name()}, у Вас нормальный вес')
         print('Рекомендации вам не требуются.')
 
-def check_names(name):
-    """Функция для определения валидности полей ФИО"""
-    cut_name = name.lstrip()
-    #if name == '' or name == ' '*len(name):
-    if cut_name == '':
-        raise InvalidName
+def choose_person():
+    number = int(input(f'Введите номер пользователя (начиная с 1 до {len(persons)}): '))
+    if 1 <= number <= len(persons):
+        return number
+    else:
+        raise InvalidNumberPerson
 
-def check_action(action):
-    if action <= 0 or action >= 5:
-        raise InvalidAction
-        
+
+
+ # Основная часть       
 persons = []
 exit = ''
 while exit.lower() != 'exit':
     try:
         choose_action = int(input('Выберете действие:\n'
+        #'0 - выход из программы\n'
         '1 - создание нового пользователя,\n'
         '2 - вывод списка пользователей,\n'
         '3 - редактирование пользователя,\n'
         '4 - удаление пользователя.\n'))
         check_action(choose_action)
         if choose_action == 1:
-            family_name = input('Введите фамилию: ')
-            check_names(family_name)
-            name = input('Введите имя: ')
-            check_names(name)
-            father_name = input('Введите отчество: ')
-            check_names(father_name)
-            height = int((input('Введите рост в cм: ')))
-            mass = float((input('Введите массу тела в кг: ')))
-            age = int(input('Введите количество полных лет: '))
-            person = Person(family_name, name, father_name, height, mass, age)
+            names = create_names()
+            params = create_params()
+            person = Person(*names, *params)
+            persons.append(person)
             print(person)
             body_index = get_bmi(person.get_mass(), person.get_height())
             print(f'{person.get_name()}, Ваш индекс массы тела: {round(body_index, 2)}')
             print_scale(body_index)
             recomendation(person)
         elif choose_action == 2:
-            for people in range(0, len(persons)):
-                print(f'{people + 1}. '
-                    f'{persons[people].get_second_name()} '
-                    f'{persons[people].get_name()} '
-                    f'{persons[people].get_father_name()}: '
-                    f'рост - {persons[people].get_height()}, '
-                    f'вес - {persons[people].get_mass()}, '
-                    f'возраст - {persons[people].get_age()}')
+            if len(persons) == 0:
+                print('Не создано еще ни одного пользователя')
+            else:
+                for people in range(0, len(persons)):
+                    print(f'{people + 1}. '
+                        f'{persons[people].get_second_name()} '
+                        f'{persons[people].get_name()} '
+                        f'{persons[people].get_father_name()}: '
+                        f'рост - {persons[people].get_height()}, '
+                        f'вес - {persons[people].get_mass()}, '
+                        f'возраст - {persons[people].get_age()}')
         elif choose_action == 3:
-            
+            if len(persons) == 0:
+                print('Не создано еще ни одного пользователя')
+            else:
+                number_person = choose_person()
+                update_params = create_params()
+                persons[number_person-1].set_height(update_params[0])
+                persons[number_person-1].set_mass(update_params[1])
+                persons[number_person-1].set_age(update_params[2])
+        else:
+            if len(persons) == 0:
+                print('Не создано еще ни одного пользователя')
+            else:
+                number_person = choose_person()
+                check_len_start = len(persons)
+                del persons[number_person-1]
+                check_len_end = len(persons)
+                if (check_len_start - check_len_end == 1):
+                    print(f'Пользователь {number_person} успешно удален')
+
     except ValueError:
-        print('*Ошибка! В полях "Выбор действия", "Рост", "Вес", и '
-            '"Возраст" необходимо вводить числовые значения')
+        print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
+            'а также Выбор номера пользователя,\n'
+            'необходимо вводить числовые значения')
     except InvalidAction:
         print('*Ошибка! В поле Выбора действия необходимо вводить число от 1 до 4 включительно')
     except InvalidName:
         print('*Ошибка! Поле ФИО не должно быть пустым или содержать пробелы')
     except InvalidHeight:
-        print(f'*Ошибка! Некорректное значение роста: {height}')
+        print(f'*Ошибка! Некорректное значение роста: {params[0]}')
     except InvalidMass:
-        print(f'*Ошибка! Некорректное значение веса: {mass}')
+        print(f'*Ошибка! Некорректное значение веса: {params[1]}')
     except InvalidAge:
-        print(f'*Ошибка! Некорректное значение возраста: {age}')
-    else: 
-        if (len(persons) == 0) and (choose_action == 2):
-            print('Не создано еще ни одного пользователя')
-        else:
-            persons.append(person)
+        print(f'*Ошибка! Некорректное значение возраста: {params[2]}')
+    except InvalidNumberPerson:
+        print('*Ошибка! Введен несуществующий номер пользователя')
     exit = input('Если хотите выйти из программы, то введите exit: ')
