@@ -3,6 +3,11 @@ class InvalidName(Exception):
     """Класс вызова исключения при некорректном ФИО"""
     pass
 
+class InvalidAction(Exception):
+    """Класс вызова исключения при вводе в поле Выбор действия всех 
+    чисел, кроме 1, 2, 3, 4"""
+    pass
+
 def get_bmi(mass, height):
     """Возвращает индекс массы тела"""
     return mass/(height/100)**2
@@ -53,19 +58,31 @@ def recomendation(person):
 
 def check_names(name):
     """Функция для определения валидности полей ФИО"""
-    if name == '' or name == ' '*len(name):
+    cut_name = name.lstrip()
+    #if name == '' or name == ' '*len(name):
+    if cut_name == '':
         raise InvalidName
+
+def check_action(action):
+    if action <= 0 or action >= 5:
+        raise InvalidAction
         
-people = []
+persons = []
 exit = ''
 while exit.lower() != 'exit':
     try:
+        choose_action = int(input('Выберете действие:\n'
+        '1 - создание нового пользователя,\n'
+        '2 - вывод списка пользователей,\n'
+        '3 - редактирование пользователя,\n'
+        '4 - удаление пользователя.\n'))
+        check_action(choose_action)
         family_name = input('Введите фамилию: ')
-        check_names(family_name) # проверка на валидность поля
+        check_names(family_name)
         name = input('Введите имя: ')
-        check_names(name) # проверка на валидность поля
+        check_names(name)
         father_name = input('Введите отчество: ')
-        check_names(father_name) # проверка на валидность поля
+        check_names(father_name)
         height = int((input('Введите рост в cм: ')))
         mass = float((input('Введите массу тела в кг: ')))
         age = int(input('Введите количество полных лет: '))
@@ -76,8 +93,10 @@ while exit.lower() != 'exit':
         print_scale(body_index) # вывод шкалы
         recomendation(person)
     except ValueError:
-        print('*Ошибка! В полях "Рост", "Вес", и "Возраст" необходимо'
-            'вводить числовые значения')
+        print('*Ошибка! В полях "Выбор действия", "Рост", "Вес", и '
+            '"Возраст" необходимо вводить числовые значения')
+    except InvalidAction:
+        print('*Ошибка! В поле Выбора действия необходимо вводить число от 1 до 4 включительно')
     except InvalidName:
         print('*Ошибка! Поле ФИО не должно быть пустым или содержать пробелы')
     except InvalidHeight:
@@ -86,8 +105,9 @@ while exit.lower() != 'exit':
         print(f'*Ошибка! Некорректное значение веса: {mass}')
     except InvalidAge:
         print(f'*Ошибка! Некорректное значение возраста: {age}')
-    
-    people.append(person) # если все поля валидные, то добавляем пользователя в список
+    else: 
+        persons.append(person)
+        print(persons)
     exit = input('Если хотите выйти из программы, то введите exit: ')
 
 
