@@ -5,15 +5,16 @@ class InvalidName(Exception):
 
 class InvalidAction(Exception):
     """Класс вызова исключения при вводе в поле Выбор действия всех 
-    чисел, кроме 1, 2, 3, 4"""
+        чисел, кроме 0, 1, 2, 3, 4"""
     pass
 
 class InvalidNumberPerson(Exception):
-    """Класс вызова исключения при вводе несуществующего номера пользователя"""
+    """Класс вызова исключения при вводе несуществующего номера 
+        пользователя"""
     pass
 
 def check_action(action):
-    if action <= 0 or action >= 5:
+    if action < 0 or action >= 5:
         raise InvalidAction
 
 def check_names(name):
@@ -87,26 +88,26 @@ def recomendation(person):
         print('Рекомендации вам не требуются.')
 
 def choose_person():
-    number = int(input(f'Введите номер пользователя (начиная с 1 до {len(persons)}): '))
+    number = int(input(f'Введите номер пользователя (начиная с 1 до '
+        f'{len(persons)}): '))
     if 1 <= number <= len(persons):
         return number
     else:
         raise InvalidNumberPerson
 
-
-
  # Основная часть       
 persons = []
-exit = ''
-while exit.lower() != 'exit':
+while True:
     try:
-        choose_action = int(input('Выберете действие:\n'
-        #'0 - выход из программы\n'
+        choose_action = int(input('\nВыберете действие:\n'
+        '0 - выход из программы\n'
         '1 - создание нового пользователя,\n'
         '2 - вывод списка пользователей,\n'
         '3 - редактирование пользователя,\n'
         '4 - удаление пользователя.\n'))
         check_action(choose_action)
+        if choose_action == 0:
+            break
         if choose_action == 1:
             names = create_names()
             params = create_params()
@@ -114,7 +115,8 @@ while exit.lower() != 'exit':
             persons.append(person)
             print(person)
             body_index = get_bmi(person.get_mass(), person.get_height())
-            print(f'{person.get_name()}, Ваш индекс массы тела: {round(body_index, 2)}')
+            print(f'{person.get_name()}, Ваш индекс массы тела: '
+                f'{round(body_index, 2)}')
             print_scale(body_index)
             recomendation(person)
         elif choose_action == 2:
@@ -138,7 +140,13 @@ while exit.lower() != 'exit':
                 persons[number_person-1].set_height(update_params[0])
                 persons[number_person-1].set_mass(update_params[1])
                 persons[number_person-1].set_age(update_params[2])
-        else:
+                body_index = get_bmi(persons[number_person-1].get_mass(),
+                    persons[number_person-1].get_height())
+                print(f'{persons[number_person-1].get_name()}, '
+                    f'Ваш индекс массы тела: {round(body_index, 2)}')
+                print_scale(body_index)
+                recomendation(persons[number_person-1])
+        elif choose_action == 4:
             if len(persons) == 0:
                 print('Не создано еще ни одного пользователя')
             else:
@@ -147,22 +155,26 @@ while exit.lower() != 'exit':
                 del persons[number_person-1]
                 check_len_end = len(persons)
                 if (check_len_start - check_len_end == 1):
-                    print(f'Пользователь {number_person} успешно удален')
+                    print(f'Пользователь {number_person} успешно удален!')
 
     except ValueError:
         print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
             'а также Выбор номера пользователя,\n'
             'необходимо вводить числовые значения')
     except InvalidAction:
-        print('*Ошибка! В поле Выбора действия необходимо вводить число от 1 до 4 включительно')
+        print('*Ошибка! В поле Выбора действия необходимо вводить число '
+            'от 1 до 4 включительно')
     except InvalidName:
-        print('*Ошибка! Поле ФИО не должно быть пустым или содержать пробелы')
+        print('*Ошибка! Поле ФИО не должно быть пустым или содержать '
+            'пробелы')
     except InvalidHeight:
-        print(f'*Ошибка! Некорректное значение роста: {params[0]}')
+        print(f'*Ошибка! Некорректное значение роста: {params[0]}. '
+            'Рост не может быть меньше 0 или больше 300 см.')
     except InvalidMass:
-        print(f'*Ошибка! Некорректное значение веса: {params[1]}')
+        print(f'*Ошибка! Некорректное значение веса: {params[1]}. '
+            'Вес не может быть меньше 0 или больше 400 кг.')
     except InvalidAge:
-        print(f'*Ошибка! Некорректное значение возраста: {params[2]}')
+        print(f'*Ошибка! Некорректное значение возраста: {params[2]}. '
+            f'Возраст не может быть меньше 0 или больше 150 лет.')
     except InvalidNumberPerson:
         print('*Ошибка! Введен несуществующий номер пользователя')
-    exit = input('Если хотите выйти из программы, то введите exit: ')
