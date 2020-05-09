@@ -3,7 +3,13 @@ from Person import *
 
 class InvalidName(Exception):
     """Класс вызова исключения при некорректном ФИО"""
-    pass
+    def __str__(self):
+        message = ('*Ошибка! Поле ФИО не должно быть пустым или '
+                'состоять только из пробелов')
+        return message
+
+
+#class InvalidNumber(Exception):
 
 
 class InvalidAction(Exception):
@@ -212,18 +218,10 @@ def main():
         except InvalidAction:
             print('*Ошибка! В поле Выбора действия необходимо вводить число '
                 'от 0 до 5 включительно')
-        except InvalidName:
-            print('*Ошибка! Поле ФИО не должно быть пустым или состоять '
-                'только из пробелов')
-        except InvalidHeight:
-            print(f'*Ошибка! Некорректное значение роста: {create_params.height}. '
-                'Рост не может быть меньше 0 или больше 300 см.')
-        except InvalidMass:
-            print(f'*Ошибка! Некорректное значение веса: {create_params.mass}. '
-                'Вес не может быть меньше 0 или больше 400 кг.')
-        except InvalidAge:
-            print(f'*Ошибка! Некорректное значение возраста: {create_params.age}. '
-                f'Возраст не может быть меньше 0 или больше 150 лет.')
+        except InvalidName as Names:
+            print(Names)
+        except InvalidParams as Params:
+            print(Params)
         except InvalidNumberPerson:
             print('*Ошибка! Введен несуществующий номер пользователя')
 
