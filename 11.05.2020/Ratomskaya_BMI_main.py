@@ -174,7 +174,19 @@ def delete_person():
         check_len_end = len(persons)
         if (check_len_start - check_len_end == 1):
             print(f'Пользователь {number_person} успешно удален!')
- 
+
+def recalculation_BMI():
+    if len(persons) == 0:
+        print('Не создано еще ни одного пользователя')
+    else:
+        number_person = choose_person()
+        body_index = get_bmi(persons[number_person-1].get_mass(),
+                             persons[number_person-1].get_height())
+        print(f'{persons[number_person-1].get_name()}, '
+              f'Ваш индекс массы тела: {round(body_index, 2)}')
+        print_scale(body_index)
+        recomendation(persons[number_person-1]) 
+
 # Основная часть
 
 while True:
@@ -191,16 +203,7 @@ while True:
         elif action == 4:
             delete_person()    
         elif action == 5:
-            if len(persons) == 0:
-                print('Не создано еще ни одного пользователя')
-            else:
-                number_person = choose_person()
-                body_index = get_bmi(persons[number_person-1].get_mass(),
-                                     persons[number_person-1].get_height())
-                print(f'{persons[number_person-1].get_name()}, '
-                      f'Ваш индекс массы тела: {round(body_index, 2)}')
-                print_scale(body_index)
-                recomendation(persons[number_person-1]) 
+            recalculation_BMI()
 
     except ValueError:
         print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
