@@ -134,7 +134,20 @@ def create_person():
         f'{round(body_index, 2)}')
     print_scale(body_index)
     recomendation(person)
-    
+
+def read_person():
+    if len(persons) == 0:
+        print('Не создано еще ни одного пользователя')
+    else:
+        for people in range(0, len(persons)):
+            print(f'{people + 1}. '
+                  f'{persons[people].get_second_name()} '
+                  f'{persons[people].get_name()} '
+                  f'{persons[people].get_father_name()}: '
+                  f'рост - {persons[people].get_height()}, '
+                  f'вес - {persons[people].get_mass()}, '
+                  f'возраст - {persons[people].get_age()}')    
+ 
  # Основная часть
 
 while True:
@@ -145,17 +158,7 @@ while True:
         if action == 1:
             create_person()
         elif action == 2:
-            if len(persons) == 0:
-                print('Не создано еще ни одного пользователя')
-            else:
-                for people in range(0, len(persons)):
-                    print(f'{people + 1}. '
-                          f'{persons[people].get_second_name()} '
-                          f'{persons[people].get_name()} '
-                          f'{persons[people].get_father_name()}: '
-                          f'рост - {persons[people].get_height()}, '
-                          f'вес - {persons[people].get_mass()}, '
-                          f'возраст - {persons[people].get_age()}')
+            read_person()
         elif action == 3:
             if len(persons) == 0:
                 print('Не создано еще ни одного пользователя')
