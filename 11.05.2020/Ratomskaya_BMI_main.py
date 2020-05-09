@@ -187,43 +187,44 @@ def recalculation_BMI():
         print_scale(body_index)
         recomendation(persons[number_person-1]) 
 
-# Основная часть
+def main():
+    while True:
+        try:
+            action = choose_action()
+            if action == 0:
+                break
+            if action == 1:
+                create_person()
+            elif action == 2:
+                read_person()
+            elif action == 3:
+                update_person()
+            elif action == 4:
+                delete_person()    
+            elif action == 5:
+                recalculation_BMI()
 
-while True:
-    try:
-        action = choose_action()
-        if action == 0:
-            break
-        if action == 1:
-            create_person()
-        elif action == 2:
-            read_person()
-        elif action == 3:
-            update_person()
-        elif action == 4:
-            delete_person()    
-        elif action == 5:
-            recalculation_BMI()
+        except ValueError:
+            print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
+                'а также Выбор номера пользователя,\n'
+                'необходимо вводить числовые значения. '
+                'Эти значения должны быть целыми (кроме поля Вес)')
+        except InvalidAction:
+            print('*Ошибка! В поле Выбора действия необходимо вводить число '
+                'от 0 до 5 включительно')
+        except InvalidName:
+            print('*Ошибка! Поле ФИО не должно быть пустым или состоять '
+                'только из пробелов')
+        except InvalidHeight:
+            print(f'*Ошибка! Некорректное значение роста: {create_params.height}. '
+                'Рост не может быть меньше 0 или больше 300 см.')
+        except InvalidMass:
+            print(f'*Ошибка! Некорректное значение веса: {create_params.mass}. '
+                'Вес не может быть меньше 0 или больше 400 кг.')
+        except InvalidAge:
+            print(f'*Ошибка! Некорректное значение возраста: {create_params.age}. '
+                f'Возраст не может быть меньше 0 или больше 150 лет.')
+        except InvalidNumberPerson:
+            print('*Ошибка! Введен несуществующий номер пользователя')
 
-    except ValueError:
-        print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
-              'а также Выбор номера пользователя,\n'
-              'необходимо вводить числовые значения. '
-              'Эти значения должны быть целыми (кроме поля Вес)')
-    except InvalidAction:
-        print('*Ошибка! В поле Выбора действия необходимо вводить число '
-              'от 0 до 5 включительно')
-    except InvalidName:
-        print('*Ошибка! Поле ФИО не должно быть пустым или состоять '
-              'только из пробелов')
-    except InvalidHeight:
-        print(f'*Ошибка! Некорректное значение роста: {create_params.height}. '
-              'Рост не может быть меньше 0 или больше 300 см.')
-    except InvalidMass:
-        print(f'*Ошибка! Некорректное значение веса: {create_params.mass}. '
-              'Вес не может быть меньше 0 или больше 400 кг.')
-    except InvalidAge:
-        print(f'*Ошибка! Некорректное значение возраста: {create_params.age}. '
-              f'Возраст не может быть меньше 0 или больше 150 лет.')
-    except InvalidNumberPerson:
-        print('*Ошибка! Введен несуществующий номер пользователя')
+main()
