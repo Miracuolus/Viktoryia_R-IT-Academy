@@ -10,7 +10,8 @@ class Person:
     def __str__(self):
         format_string = '{} {} {}: рост = {}, вес = {}, возраст = {}'
         return format_string.format(self.__second_name, self.__name,
-            self.__father_name, self.__height, self.__mass, self.__age)
+                                    self.__father_name, self.__height,
+                                    self.__mass, self.__age)
 
     def get_second_name(self):
         return self.__second_name
