@@ -1,14 +1,6 @@
 from Person import *
 
 
-class InvalidName(Exception):
-    """Класс вызова исключения при некорректном ФИО"""
-    def __str__(self):
-        message = ('*Ошибка! Поле ФИО не должно быть пустым или '
-                'состоять только из пробелов')
-        return message
-
-
 class InvalidNumber(Exception):
     def __init__(self, message, lo, hi):
         self.message = message
@@ -18,6 +10,27 @@ class InvalidNumber(Exception):
     def __str__(self):
         form = '*Ошибка! В поле {0} необходимо вводить число от {1} до {2} включительно'
         return form.format(self.message, self.lo, self.hi)
+
+
+class InvalidName(Exception):
+    """Класс вызова исключения при некорректном ФИО"""
+    def __str__(self):
+        message = ('*Ошибка! Поле ФИО не должно быть пустым или '
+                'состоять только из пробелов')
+        return message
+
+
+class InvalidParams(Exception):
+    def __init__(self, param, message, lo, hi):
+        self.param = param
+        self.message = message
+        self.lo = lo
+        self.hi = hi
+    
+    def __str__(self):
+        form = '*Ошибка! Некорректное значение параметра {1}= {0}. {1} не может быть меньше {2} или больше {3}.'
+        return form.format(self.param, self.message, self.lo, self.hi)
+
 
 def check_action(action):
     if action < 0 or action > 5:
@@ -30,7 +43,6 @@ def check_names(name):
     if cut_name == '':
         raise InvalidName
 
-
 def create_names():
     """Функция ввода ФИО"""
     family_name = input('Введите фамилию: ')
@@ -41,15 +53,29 @@ def create_names():
     check_names(father_name)
     return (father_name, name, father_name)
 
+def create_height():
+    height = int((input('Введите рост в cм: ')))
+    if height <= 0 or height >= 300:
+        raise InvalidParams(height, 'Рост', 0, 300)
+    return height
+
+def create_mass():
+    mass = float((input('Введите массу тела в кг: ')))
+    if mass <= 0 or mass >= 400:
+        raise InvalidParams(mass, 'Масса', 0, 400)
+    return mass
+
+def create_age():
+    age = int(input('Введите количество полных лет: '))
+    if age < 0 or age > 150:
+        raise InvalidParams(age, 'Возраст', 0, 150)
+    return age
 
 def create_params():
     """Функция ввода параметров пользователя"""
-    height = int((input('Введите рост в cм: ')))
-    mass = float((input('Введите массу тела в кг: ')))
-    age = int(input('Введите количество полных лет: '))
-    create_params.height = height
-    create_params.mass = mass
-    create_params.age = age
+    height = create_height()
+    mass = create_mass()
+    age = create_age()
     return(height, mass, age)
 
 
