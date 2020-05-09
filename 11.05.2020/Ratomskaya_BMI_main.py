@@ -164,7 +164,18 @@ def update_person():
         print_scale(body_index)
         recomendation(persons[number_person-1])     
 
- # Основная часть
+def delete_person():
+    if len(persons) == 0:
+        print('Не создано еще ни одного пользователя')
+    else:
+        number_person = choose_person()
+        check_len_start = len(persons)
+        del persons[number_person-1]
+        check_len_end = len(persons)
+        if (check_len_start - check_len_end == 1):
+            print(f'Пользователь {number_person} успешно удален!')
+ 
+# Основная часть
 
 while True:
     try:
@@ -178,15 +189,7 @@ while True:
         elif action == 3:
             update_person()
         elif action == 4:
-            if len(persons) == 0:
-                print('Не создано еще ни одного пользователя')
-            else:
-                number_person = choose_person()
-                check_len_start = len(persons)
-                del persons[number_person-1]
-                check_len_end = len(persons)
-                if (check_len_start - check_len_end == 1):
-                    print(f'Пользователь {number_person} успешно удален!')
+            delete_person()    
         elif action == 5:
             if len(persons) == 0:
                 print('Не создано еще ни одного пользователя')
