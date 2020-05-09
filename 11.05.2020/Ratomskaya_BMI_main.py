@@ -147,7 +147,23 @@ def read_person():
                   f'рост - {persons[people].get_height()}, '
                   f'вес - {persons[people].get_mass()}, '
                   f'возраст - {persons[people].get_age()}')    
- 
+
+def update_person():
+    if len(persons) == 0:
+        print('Не создано еще ни одного пользователя')
+    else:
+        number_person = choose_person()
+        update_params = create_params()
+        persons[number_person-1].set_height(update_params[0])
+        persons[number_person-1].set_mass(update_params[1])
+        persons[number_person-1].set_age(update_params[2])
+        body_index = get_bmi(persons[number_person-1].get_mass(),
+                             persons[number_person-1].get_height())
+        print(f'{persons[number_person-1].get_name()}, '
+              f'Ваш индекс массы тела: {round(body_index, 2)}')
+        print_scale(body_index)
+        recomendation(persons[number_person-1])     
+
  # Основная часть
 
 while True:
@@ -160,20 +176,7 @@ while True:
         elif action == 2:
             read_person()
         elif action == 3:
-            if len(persons) == 0:
-                print('Не создано еще ни одного пользователя')
-            else:
-                number_person = choose_person()
-                update_params = create_params()
-                persons[number_person-1].set_height(update_params[0])
-                persons[number_person-1].set_mass(update_params[1])
-                persons[number_person-1].set_age(update_params[2])
-                body_index = get_bmi(persons[number_person-1].get_mass(),
-                                     persons[number_person-1].get_height())
-                print(f'{persons[number_person-1].get_name()}, '
-                      f'Ваш индекс массы тела: {round(body_index, 2)}')
-                print_scale(body_index)
-                recomendation(persons[number_person-1])
+            update_person()
         elif action == 4:
             if len(persons) == 0:
                 print('Не создано еще ни одного пользователя')
