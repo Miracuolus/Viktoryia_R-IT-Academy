@@ -26,7 +26,7 @@ class Person:
 
     def set_height(self, height):
         if height <= 0 or height >= 300:
-            raise InvalidHeight
+            raise InvalidParams(height, 'Рост', 0, 300)
         self.__height = height
 
     def get_mass(self):
@@ -34,7 +34,7 @@ class Person:
 
     def set_mass(self, mass):
         if mass <= 0 or mass >= 400:
-            raise InvalidMass
+            raise InvalidParams(mass, 'Масса', 0, 400)
         self.__mass = mass
 
     def get_age(self):
@@ -42,20 +42,18 @@ class Person:
 
     def set_age(self, age):
         if age < 0 or age > 150:
-            raise InvalidAge
+            raise InvalidParams(age, 'Возраст', 0, 150)
         self.__age = age
 
 
-class InvalidHeight(Exception):
-    """Класс ошибки при вводе невалидного роста"""
-    pass
+class InvalidParams(Exception):
+    def __init__(self, param, message, lo, hi):
+        self.param = param
+        self.message = message
+        self.lo = lo
+        self.hi = hi
+    
+    def __str__(self):
+        form = '*Ошибка! Некорректное значение параметра {1}: {0}. {1} не может быть меньше {2} или больше {3}.'
+        return form.format(self.param, self.message, self.lo, self.hi)
 
-
-class InvalidMass(Exception):
-    """Класс создания ошибки при вводе невалидной массы тела"""
-    pass
-
-
-class InvalidAge(Exception):
-    """Класс создания ошибки при вводе невалидного возраста"""
-    pass
