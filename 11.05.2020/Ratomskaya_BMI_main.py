@@ -227,4 +227,6 @@ def main():
         except InvalidNumberPerson:
             print('*Ошибка! Введен несуществующий номер пользователя')
 
-main()
+
+if __name__ == "__main__":
+    main()
