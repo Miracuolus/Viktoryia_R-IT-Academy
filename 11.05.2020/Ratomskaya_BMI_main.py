@@ -6,17 +6,19 @@ class InvalidNumber(Exception):
         self.message = message
         self.lo = lo
         self.hi = hi
-    
+
     def __str__(self):
-        form = '*Ошибка! В поле {0} необходимо вводить число от {1} до {2} включительно'
+        form = '*Ошибка! В поле {0} необходимо вводить число от {1} \
+до {2} включительно'
         return form.format(self.message, self.lo, self.hi)
 
 
 class InvalidName(Exception):
     """Класс вызова исключения при некорректном ФИО"""
+
     def __str__(self):
         message = ('*Ошибка! Поле ФИО не должно быть пустым или '
-                'состоять только из пробелов')
+                   'состоять только из пробелов')
         return message
 
 
@@ -26,9 +28,10 @@ class InvalidParams(Exception):
         self.message = message
         self.lo = lo
         self.hi = hi
-    
+
     def __str__(self):
-        form = '*Ошибка! Некорректное значение параметра {1}= {0}. {1} не может быть меньше {2} или больше {3}.'
+        form = '*Ошибка! Некорректное значение параметра {1}= {0}. {1} \
+не может быть меньше {2} или больше {3}.'
         return form.format(self.param, self.message, self.lo, self.hi)
 
 
@@ -43,6 +46,7 @@ def check_names(name):
     if cut_name == '':
         raise InvalidName
 
+
 def create_names():
     """Функция ввода ФИО"""
     family_name = input('Введите фамилию: ')
@@ -53,11 +57,13 @@ def create_names():
     check_names(father_name)
     return (father_name, name, father_name)
 
+
 def create_height():
     height = int((input('Введите рост в cм: ')))
     if height <= 0 or height >= 300:
         raise InvalidParams(height, 'Рост', 0, 300)
     return height
+
 
 def create_mass():
     mass = float((input('Введите массу тела в кг: ')))
@@ -65,11 +71,13 @@ def create_mass():
         raise InvalidParams(mass, 'Масса', 0, 400)
     return mass
 
+
 def create_age():
     age = int(input('Введите количество полных лет: '))
     if age < 0 or age > 150:
         raise InvalidParams(age, 'Возраст', 0, 150)
     return age
+
 
 def create_params():
     """Функция ввода параметров пользователя"""
@@ -137,18 +145,21 @@ def choose_person():
     else:
         raise InvalidNumber('Номер пользователя', 1, len(persons))
 
+
 def choose_action():
     choose_action = int(input('\nВыберете действие:\n'
-                                  '0 - выход из программы\n'
-                                  '1 - создание нового пользователя,\n'
-                                  '2 - вывод списка пользователей,\n'
-                                  '3 - редактирование пользователя,\n'
-                                  '4 - удаление пользователя,\n'
-                                  '5 - перерасчет ИМТ.\n'))
+                              '0 - выход из программы\n'
+                              '1 - создание нового пользователя,\n'
+                              '2 - вывод списка пользователей,\n'
+                              '3 - редактирование пользователя,\n'
+                              '4 - удаление пользователя,\n'
+                              '5 - перерасчет ИМТ.\n'))
     check_action(choose_action)
     return choose_action
 
+
 persons = []
+
 
 def create_person():
     names = create_names()
@@ -158,9 +169,10 @@ def create_person():
     print(person)
     body_index = get_bmi(person.get_mass(), person.get_height())
     print(f'{person.get_name()}, Ваш индекс массы тела: '
-        f'{round(body_index, 2)}')
+          f'{round(body_index, 2)}')
     print_scale(body_index)
     recomendation(person)
+
 
 def read_person():
     if len(persons) == 0:
@@ -173,7 +185,8 @@ def read_person():
                   f'{persons[people].get_father_name()}: '
                   f'рост - {persons[people].get_height()}, '
                   f'вес - {persons[people].get_mass()}, '
-                  f'возраст - {persons[people].get_age()}')    
+                  f'возраст - {persons[people].get_age()}')
+
 
 def update_person():
     if len(persons) == 0:
@@ -189,7 +202,8 @@ def update_person():
         print(f'{persons[number_person-1].get_name()}, '
               f'Ваш индекс массы тела: {round(body_index, 2)}')
         print_scale(body_index)
-        recomendation(persons[number_person-1])     
+        recomendation(persons[number_person-1])
+
 
 def delete_person():
     if len(persons) == 0:
@@ -202,6 +216,7 @@ def delete_person():
         if (check_len_start - check_len_end == 1):
             print(f'Пользователь {number_person} успешно удален!')
 
+
 def recalculation_BMI():
     if len(persons) == 0:
         print('Не создано еще ни одного пользователя')
@@ -212,7 +227,8 @@ def recalculation_BMI():
         print(f'{persons[number_person-1].get_name()}, '
               f'Ваш индекс массы тела: {round(body_index, 2)}')
         print_scale(body_index)
-        recomendation(persons[number_person-1]) 
+        recomendation(persons[number_person-1])
+
 
 def main():
     while True:
@@ -227,15 +243,15 @@ def main():
             elif action == 3:
                 update_person()
             elif action == 4:
-                delete_person()    
+                delete_person()
             elif action == 5:
                 recalculation_BMI()
 
         except ValueError:
             print('*Ошибка! В полях Выбор действия, Рост, Вес, и Возраст, '
-                'а также Выбор номера пользователя,\n'
-                'необходимо вводить числовые значения. '
-                'Эти значения должны быть целыми (кроме поля Вес)')
+                  'а также Выбор номера пользователя,\n'
+                  'необходимо вводить числовые значения. '
+                  'Эти значения должны быть целыми (кроме поля Вес)')
         except InvalidNumber as ErNumber:
             print(ErNumber)
         except InvalidName as ErNames:
