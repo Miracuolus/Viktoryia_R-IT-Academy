@@ -9,24 +9,19 @@ class InvalidName(Exception):
         return message
 
 
-#class InvalidNumber(Exception):
-
-
-class InvalidAction(Exception):
-    """ Класс вызова исключения при вводе в поле Выбор действия всех 
-        чисел, кроме 0, 1, 2, 3, 4, 5 """
-    pass
-
-
-class InvalidNumberPerson(Exception):
-    """ Класс вызова исключения при вводе несуществующего номера 
-        пользователя"""
-    pass
-
+class InvalidNumber(Exception):
+    def __init__(self, message, lo, hi):
+        self.message = message
+        self.lo = lo
+        self.hi = hi
+    
+    def __str__(self):
+        form = '*Ошибка! В поле {0} необходимо вводить число от {1} до {2} включительно'
+        return form.format(self.message, self.lo, self.hi)
 
 def check_action(action):
     if action < 0 or action > 5:
-        raise InvalidAction
+        raise InvalidNumber('Выбор действия', 0, 5)
 
 
 def check_names(name):
@@ -114,7 +109,7 @@ def choose_person():
     if 1 <= number <= len(persons):
         return number
     else:
-        raise InvalidNumberPerson
+        raise InvalidNumber('Номер пользователя', 1, len(persons))
 
 def choose_action():
     choose_action = int(input('\nВыберете действие:\n'
@@ -215,15 +210,12 @@ def main():
                 'а также Выбор номера пользователя,\n'
                 'необходимо вводить числовые значения. '
                 'Эти значения должны быть целыми (кроме поля Вес)')
-        except InvalidAction:
-            print('*Ошибка! В поле Выбора действия необходимо вводить число '
-                'от 0 до 5 включительно')
-        except InvalidName as Names:
-            print(Names)
-        except InvalidParams as Params:
-            print(Params)
-        except InvalidNumberPerson:
-            print('*Ошибка! Введен несуществующий номер пользователя')
+        except InvalidNumber as ErNumber:
+            print(ErNumber)
+        except InvalidName as ErNames:
+            print(ErNames)
+        except InvalidParams as ErParams:
+            print(ErParams)
 
 
 if __name__ == "__main__":
