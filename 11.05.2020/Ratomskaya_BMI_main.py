@@ -46,6 +46,9 @@ def create_params():
     height = int((input('Введите рост в cм: ')))
     mass = float((input('Введите массу тела в кг: ')))
     age = int(input('Введите количество полных лет: '))
+    create_params.height = height
+    create_params.mass = mass
+    create_params.age = age
     return(height, mass, age)
 
 
@@ -117,24 +120,30 @@ def choose_action():
                                   '5 - перерасчет ИМТ.\n'))
     check_action(choose_action)
     return choose_action
- # Основная часть
+
 persons = []
+
+def create_person():
+    names = create_names()
+    params = create_params()
+    person = Person(*names, *params)
+    persons.append(person)
+    print(person)
+    body_index = get_bmi(person.get_mass(), person.get_height())
+    print(f'{person.get_name()}, Ваш индекс массы тела: '
+        f'{round(body_index, 2)}')
+    print_scale(body_index)
+    recomendation(person)
+    
+ # Основная часть
+
 while True:
     try:
         action = choose_action()
         if action == 0:
             break
         if action == 1:
-            names = create_names()
-            params = create_params()
-            person = Person(*names, *params)
-            persons.append(person)
-            print(person)
-            body_index = get_bmi(person.get_mass(), person.get_height())
-            print(f'{person.get_name()}, Ваш индекс массы тела: '
-                  f'{round(body_index, 2)}')
-            print_scale(body_index)
-            recomendation(person)
+            create_person()
         elif action == 2:
             if len(persons) == 0:
                 print('Не создано еще ни одного пользователя')
@@ -196,13 +205,13 @@ while True:
         print('*Ошибка! Поле ФИО не должно быть пустым или состоять '
               'только из пробелов')
     except InvalidHeight:
-        print(f'*Ошибка! Некорректное значение роста: {params[0]}. '
+        print(f'*Ошибка! Некорректное значение роста: {create_params.height}. '
               'Рост не может быть меньше 0 или больше 300 см.')
     except InvalidMass:
-        print(f'*Ошибка! Некорректное значение веса: {params[1]}. '
+        print(f'*Ошибка! Некорректное значение веса: {create_params.mass}. '
               'Вес не может быть меньше 0 или больше 400 кг.')
     except InvalidAge:
-        print(f'*Ошибка! Некорректное значение возраста: {params[2]}. '
+        print(f'*Ошибка! Некорректное значение возраста: {create_params.age}. '
               f'Возраст не может быть меньше 0 или больше 150 лет.')
     except InvalidNumberPerson:
         print('*Ошибка! Введен несуществующий номер пользователя')
