@@ -11,74 +11,81 @@ brousers = {'Mozilla Firefox' : ['Gecko', 'Firefox'],
             'Microsoft Edge': ['Chrome', 'Safari', 'Edge'],
             'Bing': ['BingPreview'],
             'Chromium' : ['Ubuntu', 'Chromium', 'Chrome', 'Safari'],
-            'Safari for iPhone': ['Version', 'Mobile', 'Safari'],
-            'Chrome for iPhone': ['CriOS', 'Mobile', 'Safari'],
-            'Android': ['Version', 'Mobile', 'Safari'],
-            'Safari for iPad': ['Version', 'Mobile', 'Safari'],
-            'Chrome for iPad': ['CriOS', 'Mobile', 'Safari']}
+            'Safari for iPhone': ['iPhone', 'Version', 'Mobile', 'Safari'],}
+                      # 'Chrome for iPhone': ['CriOS', 'Mobile', 'Safari']},
+            #'iPhone': {'Safari for iPhone': ['Version', 'Mobile', 'Safari'],
+                      # 'Chrome for iPhone': ['CriOS', 'Mobile', 'Safari']},
+            #'Android': ['Version', 'Mobile', 'Safari'],}
+            #'Safari for iPad': ['Version', 'Mobile', 'Safari'],
+            #'Chrome for iPad': ['CriOS', 'Mobile', 'Safari']}
 
 count_brousers = {}
 for i in brousers.keys():
     count_brousers[i] = 0
-    
 
-count = 0
-count_brouser_1 = 0
-ip_addresses = set()
+all_request_count = 0
+unic_ip_addresses = set()
 
-def agents(line):
-    user_agent = line.rpartition(') ')
-    if user_agent[0] != '':
-        #print(user_agent[2])
-        agent = user_agent[2].rpartition(')')
-        #print(agent)
-        if agent[2] != '':
-            #print(agent[2])
-            value_brothers = agent[2].rsplit(' ')
-            if value_brothers != ['"\n']:
-                #print(value_brothers)
-            #if value_brothers == None:
-                #print(line)
-                #print(value_brothers)
-                return value_brothers
+def unic_address(line):
+    ip = line.partition(' - - [')
+    unic_ip_addresses.add(ip[0])
+    return unic_ip_addresses
+
+
+def list_agents(line):
+    agents_with_bots = line.rpartition(') ')
+    if agents_with_bots[0] != '':
+        agents_without_bots = agents_with_bots[2].rpartition(')')
+        if agents_without_bots[2] != '':
+            list_brothers = agents_without_bots[2].rsplit(' ')
+            if list_brothers != ['"\n']:
+                return list_brothers
     #print(line)
 
+def analysis(brousers, request_agents):
+    for key in brousers.keys():
+        if len(brousers.get(key)) != len(request_agents):
+            continue
+        is_find = True    
+        for agent in brousers.get(key):
+            if not find_agent(request_agents, agent):
+                is_find = False
+                break
+        if is_find:    
+            count_brousers[key] = count_brousers.get(key) + 1
+                
+        
 
 
+def find_agent(agents, value):
+    for agent in agents:
+        if agent.find(value) != -1:
+            return True
+    return False
+
+
+
+
+l_count_del = 0
 with open(f, 'r') as fp:
-    co = []
-    c = 0
-    t = 0
-    l_count_del = 0
     for line in fp.readlines():
-        count += 1
-        ip = line.partition(' - - [')
-        ip_addresses.add(ip[0])
-        l_brouthers = agents(line)
-        if l_brouthers != None:
-            for k in brousers.keys():
-                len(brousers.get(k))
-                c = 0
-                t = 0
-                for v in brousers.get(k):
-                    if type(l_brouthers) == list:
-                        if len(l_brouthers) == len(brousers.get(k)):
-                            for iii in l_brouthers:
-                                if iii.find('Mobile') != 1:
-                                    if (iii.find(v) != -1) and (line.find(k) != -1):
-                                        t += 1
-                                elif iii.find(v) != -1:
-                                    t += 1
-                if t == len(brousers.get(k)):
-                    count_brousers[k] = count_brousers.get(k) + 1
+        all_request_count += 1
+        unic_ip = unic_address(line)
+        agents = list_agents(line)
+        if agents != None:
+
+            analysis(brousers, agents)
+            
+
+            
             l_count_del += 1
     print(l_count_del)
         
 
-    print(f'Количество запросов в файле {f} = {count}')
-    print(f'Количество уникальных запросов в файле {f} = {len(ip_addresses)}')
-    #print(f'Список уникальных запросов в файле {f}: {ip_addresses}')
-    print(f'Количество запросов через браузер Mozilla Firefox в файле {f} = {count_brouser_1}')
+    print(f'Количество запросов в файле {f} = {all_request_count}')
+    print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
+    #print(f'Список уникальных запросов в файле {f}: {unic_ip}')
+    #print(f'Количество запросов через браузер Mozilla Firefox в файле {f} = {count_brouser_1}')
     #print(f'Количество запросов через браузер {brouser_2} в файле {f} = {count_brouser_2}')
     #print(f'Количество запросов через браузер {brouser_3} в файле {f} = {count_brouser_3}')
     print(count_brousers)
