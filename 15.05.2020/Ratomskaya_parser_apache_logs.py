@@ -1,6 +1,8 @@
 import re
+import os
 
 f = 'apache_logs.txt'
+
 brousers = {'Mozilla Firefox' : ['Gecko', 'Firefox'],
             'Mozilla Firefox2' : ['Gecko', 'BonEcho'],
             'Mozilla for Linux' : ['Gecko', 'Firefox', 'Iceweasel'],
@@ -189,6 +191,19 @@ def find_agent(agents, value):
             return True
     return False
 
+def save_data(file_name, list_values, strings):
+    fl = open(file_name, 'w')
+    for value in list_values:
+        fl.write(value)
+        fl.write('\n')
+    size_bytes = os.path.getsize(file_name)
+    if size_bytes != 0:
+        print(f'{strings} сохранен в файл {file_name} размером {size_bytes} байт')
+
+
+
+
+
 l_count_del = 0
 with open(f, 'r') as fp:
     for line in fp.readlines():
@@ -226,8 +241,9 @@ with open(f, 'r') as fp:
     print(f'Количество запросов в файле {f} = {all_request_count}')
     print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
 
-    print(f'Нет URL-запроса: {not_url}')
     print(f'Кол-во URL-запроса: {len(list_referers)}')
+    print(f'Нет URL-запроса: {not_url}')
+    print(f'Известно информации от систем: {len(list_system)}')
     print(f'Нет информации о системе: {no_inform_syst}')
     
     print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
@@ -251,10 +267,16 @@ with open(f, 'r') as fp:
         num3 += count_bots.get(key)
     # print(num3)
 
-    file_ip = 'unic_ip.txt'
-    file_unic_ip = open(file_ip, 'w')
-    for ip in unic_ip:
-        file_unic_ip.write(ip)
-        file_unic_ip.write('\n')
-    print(f'Список уникальных ip сохранен в файл {file_ip}')
+    save_data('unic_ip.txt', unic_ip, 'Список уникальных ip')
+
+    save_data('date_time.txt', list_time, 'Список даты и времени')
+
+    save_data('protocols.txt', list_protocol, 'Список протоколов')
+
+    save_data('referers.txt', list_referers, 'Список запросов')
+
+    save_data('information_system.txt', list_system, 'Список информации от систем')
+
+    
+    
  
