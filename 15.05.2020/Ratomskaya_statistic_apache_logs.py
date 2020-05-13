@@ -8,7 +8,6 @@ brousers = {'Mozilla Firefox' : ['Gecko', 'Firefox'],
             'Apple Safari': ['Version', 'Safari'],
             'Opera 19': ['Chrome', 'Safari', 'OPR'], #19
             'Opera 12': ['Presto', 'Version'],#89
-            'Opera 9': ['Presto'], #89
             'Internet Explorer': ['like', 'Gecko'],
             'Microsoft Edge': ['Chrome', 'Safari', 'Edge'],
             'Bing': ['BingPreview'], #8
@@ -121,29 +120,52 @@ def system():
 
 list_agent = []
 list_bots_research = []
+count_true = 0
 def agents():
     global list_agent
+    global count_true
     agent = pattern_agents()
     if len(agent) == 2:
-        agents = re.findall(r'\w+.+\n', agent[1]) # браузеры и поиск 
+        count_true += 1
+        agents = re.findall(r'\w+.+\n', agent[1]) # браузеры и поиск
+        if agents != []:
+            if agents[0].find('(') != -1:
+                
+                agen = re.split(r'\s\(.+\)\"\n', agents[0])
+                #print(agen[0])
+                list_agent = agen[0].split(' ') # браузеры
+            else:
+                
+                list_agent = agents[0].split(' ') # браузеры
+            
+
+            #print(list_agent)
         if re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[1]):
             agents = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[1])
             list_bots_research.append(agents[0])
-            agents = re.split(r'\w+\:\/+\w+\.\w+.+\n', agent[1])
-            agents = re.split(r'\(.+', agent[1])
-            list_agent = agents[0].split(' ') # браузеры
-            return list_agent
+            
+            
+            #agents = re.split(r'\w+\:\/+\w+\.\w+.+\n', agent[1])
+            
+            #agents = re.split(r'\(.+', agent[1])
+            #list_agent = agents[0].split(' ') # браузеры
+            #return list_agent
                         
-        else:
-            if agents != []:
-                list_agent = agents[0].split(' ') # браузеры
-                return list_agent
-
+        #else:
+        #    if agents != []:
+                #print(f'{agents} => {len(agents)}')
+        #        list_agent = agents[0].split(' ') # браузеры
+        #        return list_agent
+        return list_agent 
     else:
-       agents = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[0]) # боты
-       if agents != []:
-           list_bots_research.append(agents[0])
-           return list_agent
+        a = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[0]) # боты
+        if a != []:
+            list_bots_research.append(a[0])
+        list_agent = agent[0].split(' ') # браузеры
+        return list_agent
+        
+       #    list_agent = agent[0].split(' ') # браузеры
+       #    return list_agent
     
 
 def list_agents(line):
@@ -170,6 +192,7 @@ def analysis(brousers, request_agents):
             count_brousers[key] = count_brousers.get(key) + 1
 
 def analysis_mobile(brousers, line):
+    global count_true
     for key in brousers.keys():
         is_find = True    
         for agent in brousers.get(key):
@@ -178,10 +201,11 @@ def analysis_mobile(brousers, line):
                 break
         if is_find:    
             count_brousers[key] = count_brousers.get(key) + 1
+            count_true += 1
 
 def analysis_search_systems(count, brousers, line):
     for key in brousers.keys():
-        is_find = True    
+        is_find = True
         if line.find(brousers[key]) == -1:
             is_find = False
             continue
@@ -217,6 +241,7 @@ with open(f, 'r') as fp:
         analysis_mobile(mobile_brousers, line)
         analysis_search_systems(count_search,search_systems, line)
         analysis_search_systems(count_bots,bots, line)
+        
 
         agent = agents()
         if agent != None:
@@ -224,7 +249,9 @@ with open(f, 'r') as fp:
             l_count_del += 1
         
         analysis(brousers, list_agent)
-        
+        ff = open('brousers.txt', 'a')
+        for ii in list_agent:
+            ff.write(ii)
         #print(len(list_bots_research))
         
         #agents = list_agents(line)
@@ -241,7 +268,7 @@ with open(f, 'r') as fp:
 
             
         #    l_count_del += 1
-  
+    print(count_true)
     set_bots_research = set()
     for i in list_bots_research:
         bot = re.split(r'\"\n', i)
