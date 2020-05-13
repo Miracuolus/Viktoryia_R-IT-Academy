@@ -127,56 +127,26 @@ def agents():
     agent = pattern_agents()
     if len(agent) == 2:
         count_true += 1
-        agents = re.findall(r'\w+.+\n', agent[1]) # браузеры и поиск
+        agents = re.findall(r'\w+.+\n', agent[1])
         if agents != []:
             if agents[0].find('(') != -1:
-                
                 agen = re.split(r'\s\(.+\)\"\n', agents[0])
                 #print(agen[0])
-                list_agent = agen[0].split(' ') # браузеры
+                list_agent = agen[0].split(' ')
             else:
                 
-                list_agent = agents[0].split(' ') # браузеры
-            
-
-            #print(list_agent)
+                list_agent = agents[0].split(' ')
         if re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[1]):
             agents = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[1])
             list_bots_research.append(agents[0])
-            
-            
-            #agents = re.split(r'\w+\:\/+\w+\.\w+.+\n', agent[1])
-            
-            #agents = re.split(r'\(.+', agent[1])
-            #list_agent = agents[0].split(' ') # браузеры
-            #return list_agent
-                        
-        #else:
-        #    if agents != []:
-                #print(f'{agents} => {len(agents)}')
-        #        list_agent = agents[0].split(' ') # браузеры
-        #        return list_agent
         return list_agent 
     else:
-        a = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[0]) # боты
+        a = re.findall(r'\w+\:\/+\w+\.\w+.+\n', agent[0])
         if a != []:
             list_bots_research.append(a[0])
-        list_agent = agent[0].split(' ') # браузеры
+        list_agent = agent[0].split(' ')
         return list_agent
-        
-       #    list_agent = agent[0].split(' ') # браузеры
-       #    return list_agent
-    
 
-def list_agents(line):
-    agents_with_bots = line.rpartition(') ')
-    if agents_with_bots[0] != '':
-        agents_without_bots = agents_with_bots[2].rpartition(')')
-        if agents_without_bots[2] != '':
-            list_brothers = agents_without_bots[2].rsplit(' ')
-            if list_brothers != ['"\n']:
-                return list_brothers
-    #print(line)
 
 request_agents = []
 def analysis(brousers, request_agents):
@@ -212,16 +182,12 @@ def analysis_search_systems(count, brousers, line):
         if is_find:    
             count[key] = count.get(key) + 1
 
-               
-     
+
 def find_agent(agents, value):
     for agent in agents:
         if agent.find(value) != -1:
             return True
     return False
-
-
-
 
 l_count_del = 0
 with open(f, 'r') as fp:
@@ -245,64 +211,53 @@ with open(f, 'r') as fp:
 
         agent = agents()
         if agent != None:
-            #print(agent)
             l_count_del += 1
         
         analysis(brousers, list_agent)
-        ff = open('brousers.txt', 'a')
-        for ii in list_agent:
-            ff.write(ii)
-        #print(len(list_bots_research))
-        
-        #agents = list_agents(line)
-        #analysis_search_systems(search_systems, line)
-        #analysis_search_systems(bots, line)
-        #if agents != None:
+    
 
-        #    if find_agent(agents, 'Mobile'):
-                
-        #        analysis_mobile(mobile_brousers, line)
-        #    else:
-        #        analysis(brousers, agents)
-            
 
-            
-        #    l_count_del += 1
-    print(count_true)
     set_bots_research = set()
     for i in list_bots_research:
         bot = re.split(r'\"\n', i)
         bot = re.split(r'\;', bot[0])
         bot = re.split(r'\)', bot[0])
         set_bots_research.add(bot[0])
-    #print(set_bots_research)
-    print(len(set_bots_research))
+    
+    print(f'Список уникальных запросов в файле {f}: {unic_ip}')
     print(f'Количество запросов в файле {f} = {all_request_count}')
     print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
     print(f'Нет URL-запроса: {not_url}')
     print(f'Кол-во URL-запроса: {len(list_referers)}')
-    print(f'Нет информации от системе: {no_inform_syst}')
-    #print(f'Список уникальных запросов в файле {f}: {unic_ip}')
-    #print(f'Количество запросов через браузер Mozilla Firefox в файле {f} = {count_brouser_1}')
-    #print(f'Количество запросов через браузер {brouser_2} в файле {f} = {count_brouser_2}')
-    #print(f'Количество запросов через браузер {brouser_3} в файле {f} = {count_brouser_3}')
-    print(count_brousers)
+    print(f'Нет информации о системе: {no_inform_syst}')
+    
+    print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
+          f'{count_brousers}')
     num = 0
     for key in count_brousers.keys():
         num += count_brousers.get(key)
-    print(num)
+    #print(num)
 
-    print(count_search)
+    print(f'Количество запросов от поисковых систем:\n'
+          f'{count_search}')
     num2 = 0
     for key in count_search.keys():
         num2 += count_search.get(key)
-    print(num2)
+    #print(num2)
 
-    print(count_bots)
+    print(f'Список ботов и кол-во их запросов:\n'
+          f'{count_bots}')
     num3 = 0
     for key in count_bots.keys():
         num3 += count_bots.get(key)
-    print(num3)
+    #print(num3)
+    file_ip = 'unic_ip.txt'
+    file_unic_ip = open(file_ip, 'w')
+    for ip in unic_ip:
+        file_unic_ip.write(ip)
+        file_unic_ip.write('\n')
+    print(f'Список уникальных ip сохранен в файл {file_ip}')
+
 
     
     
