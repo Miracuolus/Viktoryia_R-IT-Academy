@@ -1,6 +1,7 @@
 import math
 
-def generator(hi = math.inf) :
+
+def generator(hi=math.inf):
     i = 0
     while i < hi:
         i += 1
@@ -11,5 +12,4 @@ def generator(hi = math.inf) :
 
 g = generator(200)
 for j in g:
-    print(j, end = ', ')
-
+    print(j, end=', ')

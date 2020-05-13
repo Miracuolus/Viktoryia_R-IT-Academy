@@ -3,9 +3,9 @@ import os
 
 f = 'apache_logs.txt'
 
-brousers = {'Mozilla Firefox' : ['Gecko', 'Firefox'],
-            'Mozilla Firefox2' : ['Gecko', 'BonEcho'],
-            'Mozilla for Linux' : ['Gecko', 'Firefox', 'Iceweasel'],
+brousers = {'Mozilla Firefox': ['Gecko', 'Firefox'],
+            'Mozilla Firefox2': ['Gecko', 'BonEcho'],
+            'Mozilla for Linux': ['Gecko', 'Firefox', 'Iceweasel'],
             'Google Chrome': ['Chrome', 'Safari'],
             'Apple Safari': ['Version', 'Safari'],
             'Opera 19': ['Chrome', 'Safari', 'OPR'],
@@ -13,14 +13,14 @@ brousers = {'Mozilla Firefox' : ['Gecko', 'Firefox'],
             'Internet Explorer': ['like', 'Gecko'],
             'Microsoft Edge': ['Chrome', 'Safari', 'Edge'],
             'Bing': ['BingPreview'],
-            'Chromium' : ['Ubuntu', 'Chromium', 'Chrome', 'Safari'],} 
+            'Chromium': ['Ubuntu', 'Chromium', 'Chrome', 'Safari']}
 
 mobile_brousers = {'Safari on iPhone': ['(iPhone', 'Version', 'Mobile', 'Safari'],
-                   'Chrome on iPhone': ['(iPhone','CriOS', 'Mobile', 'Safari'],
+                   'Chrome on iPhone': ['(iPhone', 'CriOS', 'Mobile', 'Safari'],
                    'Chrome on Android': ['Android', 'Chrome', 'Mobile', 'Safari'],
                    'Others on Android': ['Android', 'Version', 'Mobile', 'Safari'],
                    'Safari on iPad': ['(iPad', 'Version', 'Mobile', 'Safari'],
-                   'Chrome on iPad': ['(iPad','CriOS', 'Mobile', 'Safari']}
+                   'Chrome on iPad': ['(iPad', 'CriOS', 'Mobile', 'Safari']}
 
 search_systems = {'Яндекс': 'http://yandex.com/bots',
                   'Google': 'http://www.google.com/bot.html',
@@ -53,12 +53,14 @@ unic_ip_addresses = set()
 pattern_unic_address = re.compile(r' - - ')
 pattern_times = re.compile(r'\d+\/\w+\/\d+\:\d+\:\d+\:\d+')
 
+
 def pattern_protocols():
     protocol = pattern_unic_address.split(line)
     protocol = pattern_times.split(protocol[1])
     protocol = re.split(r'\s\+\d+\]\s\"', protocol[1])
     protocol = re.split(r'\s\"', protocol[1], maxsplit=1)
     return protocol
+
 
 def pattern_system():
     system = pattern_protocols()
@@ -68,13 +70,15 @@ def pattern_system():
         sys = re.split(r'\w+.+\"\s\"', system[1])
     return sys
 
+
 def pattern_agents():
     agents = pattern_system()
     if len(agents) == 2:
-       agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[1]) 
+        agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[1])
     else:
-       agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[0])
+        agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[0])
     return agent
+
 
 def unic_address(line):
     ip = pattern_unic_address.split(line)
@@ -83,12 +87,16 @@ def unic_address(line):
 
 
 list_time = []
+
+
 def time(line):
     time = pattern_times.findall(line)
     list_time.append(time[0])
     return list_time
 
 list_protocol = []
+
+
 def protocol(line):
     protocol = pattern_protocols()
     list_protocol.append(protocol[0])
@@ -96,6 +104,7 @@ def protocol(line):
 
 list_referers = []
 not_url = 0
+
 
 def referer():
     protocol = pattern_protocols()
@@ -108,12 +117,14 @@ def referer():
 
 list_system = []
 no_inform_syst = 0
+
+
 def system():
     sys = pattern_system()
     if len(sys) == 2:
-       system = re.findall(r'\w+\/.+\s\(.+\)\s', sys[1])
+        system = re.findall(r'\w+\/.+\s\(.+\)\s', sys[1])
     else:
-       system = re.findall(r'\w+\/.+\s\(.+\)\s', sys[0])
+        system = re.findall(r'\w+\/.+\s\(.+\)\s', sys[0])
     if system == []:
         global no_inform_syst
         no_inform_syst += 1
@@ -123,6 +134,8 @@ def system():
 list_agent = []
 list_bots_research = []
 count_true = 0
+
+
 def agents():
     global list_agent
     global count_true
@@ -149,6 +162,8 @@ def agents():
 
 
 request_agents = []
+
+
 def analysis(brousers, request_agents):
     for key in brousers.keys():
         if len(brousers.get(key)) != len(request_agents):
@@ -191,6 +206,7 @@ def find_agent(agents, value):
             return True
     return False
 
+
 def save_data(file_name, list_values, strings):
     fl = open(file_name, 'w')
     for value in list_values:
@@ -198,45 +214,41 @@ def save_data(file_name, list_values, strings):
         fl.write('\n')
     size_bytes = os.path.getsize(file_name)
     if size_bytes != 0:
-        print(f'{strings} сохранен в файл {file_name} размером {size_bytes} байт')
-
-
-
+        print(f'{strings} сохранен в файл {file_name} размером '
+              f'{size_bytes} байт')
 
 
 l_count_del = 0
 with open(f, 'r') as fp:
     for line in fp.readlines():
-        all_request_count += 1 # кол-во запросов
+        all_request_count += 1  # кол-во запросов
 
-        unic_ip = unic_address(line) # список уникальных IP
+        unic_ip = unic_address(line)  # список уникальных IP
 
-        time(line) # список даты и времени
+        time(line)  # список даты и времени
 
-        protocol(line) # список протоколов
+        protocol(line)  # список протоколов
 
-        referer() # список URL-запросов
+        referer()  # список URL-запросов
 
-        system() # информация о системе
+        system()  # информация о системе
 
         analysis_mobile(mobile_brousers, line)
-        analysis_search_systems(count_search,search_systems, line)
-        analysis_search_systems(count_bots,bots, line)
-
-
+        analysis_search_systems(count_search, search_systems, line)
+        analysis_search_systems(count_bots, bots, line)
         agent = agents()
-        if agent != None:
+        if agent is not None:
             l_count_del += 1
-        
+
         analysis(brousers, list_agent)
-    
+
     set_bots_research = set()
     for i in list_bots_research:
         bot = re.split(r'\"\n', i)
         bot = re.split(r'\;', bot[0])
         bot = re.split(r'\)', bot[0])
         set_bots_research.add(bot[0])
-    
+
     print(f'Список уникальных запросов в файле {f}: {unic_ip}')
     print(f'Количество запросов в файле {f} = {all_request_count}')
     print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
@@ -245,7 +257,7 @@ with open(f, 'r') as fp:
     print(f'Нет URL-запроса: {not_url}')
     print(f'Известно информации от систем: {len(list_system)}')
     print(f'Нет информации о системе: {no_inform_syst}')
-    
+
     print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
           f'{count_brousers}')
     num = 0
@@ -275,8 +287,5 @@ with open(f, 'r') as fp:
 
     save_data('referers.txt', list_referers, 'Список запросов')
 
-    save_data('information_system.txt', list_system, 'Список информации от систем')
-
-    
-    
- 
+    save_data('information_system.txt', list_system,
+              'Список информации от систем')
