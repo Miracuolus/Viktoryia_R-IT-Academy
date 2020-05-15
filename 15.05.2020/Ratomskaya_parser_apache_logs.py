@@ -51,13 +51,14 @@ all_request_count = 0
 unic_ip_addresses = set()
 
 pattern_unic_address = re.compile(r' - - ')
-pattern_times = re.compile(r'\d+\/\w+\/\d+\:\d+\:\d+\:\d+')
+pattern_times = re.compile(r'\d+\/\w+\/\d+\:\d+\:\d+\:\d+\s\+\d+')
+
 
 
 def pattern_protocols():
     protocol = pattern_unic_address.split(line)
     protocol = pattern_times.split(protocol[1])
-    protocol = re.split(r'\s\+\d+\]\s\"', protocol[1])
+    protocol = re.split(r'\]\s\"', protocol[1])
     protocol = re.split(r'\s\"', protocol[1], maxsplit=1)
     return protocol
 
@@ -232,7 +233,6 @@ with open(f, 'r') as fp:
         referer()  # список URL-запросов
 
         system()  # информация о системе
-
         analysis_mobile(mobile_brousers, line)
         analysis_search_systems(count_search, search_systems, line)
         analysis_search_systems(count_bots, bots, line)

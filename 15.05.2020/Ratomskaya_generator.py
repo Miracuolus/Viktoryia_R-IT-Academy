@@ -1,6 +1,5 @@
 import math
 
-
 def generator(hi=math.inf):
     i = 0
     while i < hi:
