@@ -92,6 +92,13 @@ def unic_address(line):
 
 list_time = []
 
+set_date = set()
+def date(line):
+    date_time = pattern_times.findall(line)
+    date = re.findall(r'\d+\/\w+\/\d+',date_time[0])
+    set_date.add(date[0])
+    return set_date
+
 
 def time(line):
     time = pattern_times.findall(line)
@@ -230,6 +237,8 @@ with open(folder_apache_logs, 'r') as fp:
 
         unic_ip = unic_address(line)  # список уникальных IP
 
+        date(line)  # список уникальной даты
+
         time(line)  # список даты и времени
 
         protocol(line)  # список протоколов
@@ -293,3 +302,5 @@ with open(folder_apache_logs, 'r') as fp:
 
     save_data('information_system.txt', list_system,
               'Список информации от систем')
+    
+    print(set_date)
