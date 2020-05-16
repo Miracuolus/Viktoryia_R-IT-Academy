@@ -244,6 +244,7 @@ def analysis_search_systems(count, brousers, line):
             continue
         if is_find:
             count[key] = count.get(key) + 1
+            count_date_brousers(line, set_date, key, date_searche_system, counter_ssystem)
 
 
 def find_agent(agents, value):
@@ -276,15 +277,18 @@ def ip_date(line):
 
 
 def print_date_info(date_dict, count_info, string_info):
+    print(f'------------------------------------------------',
+          f'Информация о дате и {string_info}',
+          f'------------------------------------------------')
     count = 0
     for k in date_dict.keys():
-        print(f'{k} было зафиксированно запросов от следующих {string_info}: ')
-        print(date_dict[k])
+        print(f'{k} было зафиксированно запросов от следующих {string_info}:')
+        print(f'{date_dict[k]}\n')
         for k2 in date_dict[k].keys():
             count += date_dict[k][k2]
 
-    print(f'Общее кол-во запросов от {string_info} браузеров {count}')
-    print(f'Общее кол-во запросов от {string_info} браузеров по дням {dict(count_info)}')
+    print(f'Общее кол-во запросов от {string_info} = {count}')
+    print(f'Общее кол-во запросов от {string_info} по дням {dict(count_info)}')
 
 
 l_count_del = 0
@@ -396,12 +400,8 @@ with open(folder_apache_logs, 'r') as fp:
     save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар дата-время')
 
     #print(date_brousers)
-    print('------------------------------------------------'\
-          'Информация о дате и десктопных браузерах'\
-          '------------------------------------------------')
-    print_date_info(date_brousers, counter_dbrousers, 'десктопных')
+    print_date_info(date_brousers, counter_dbrousers, 'десктопных браузерах')
 
-    print('------------------------------------------------'\
-          'Информация о дате и мобильных браузерах'\
-          '------------------------------------------------')
-    print_date_info(date_mobale_brousers, counter_mbrousers, 'мобильных')
+    print_date_info(date_mobale_brousers, counter_mbrousers, 'мобильных браузерах')
+
+    print_date_info(date_searche_system, counter_ssystem, 'поисковых систем')
