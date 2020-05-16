@@ -52,11 +52,9 @@ for g in bots.keys():
     count_bots[g] = 0
 
 all_request_count = 0
-unic_ip_addresses = set()
 
 pattern_unic_address = re.compile(r' - - ')
 pattern_times = re.compile(r'\d+\/\w+\/\d+\:\d+\:\d+\:\d+\s\+\d+')
-
 
 
 def pattern_protocols():
@@ -83,6 +81,9 @@ def pattern_agents():
     else:
         agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[0])
     return agent
+
+
+unic_ip_addresses = set()
 
 
 def unic_address(line):
@@ -236,6 +237,16 @@ def save_data(file_name, list_values, strings):
               f'{size_bytes} байт')
 
 
+list_ip_date = []
+set_ip_date = set()
+pattern_ip_date = re.compile(r'\d+\.\d+\.\d+\.\d+\s\-\s\-\s\[\d+\/\w+\/\d+')
+def ip_date(line):
+    ip_date = pattern_ip_date.findall(line)
+    list_ip_date.append(ip_date[0])
+    set_ip_date.add(ip_date[0])
+    return set_ip_date
+
+
 l_count_del = 0
 with open(folder_apache_logs, 'r') as fp:
     for line in fp.readlines():
@@ -260,6 +271,9 @@ with open(folder_apache_logs, 'r') as fp:
             l_count_del += 1
 
         analysis(brousers, list_agent)
+
+        ip_date(line)  # список IP и даты 
+
 
     set_bots_research = set()
     for i in list_bots_research:
@@ -313,6 +327,7 @@ with open(folder_apache_logs, 'r') as fp:
     print(f'Список уникальных дат: {set_date}')
     for date in list_date:
         counter_date[date] += 1
+
     
     print(f'Количество упоминаний даты: {dict(counter_date)}')
 
@@ -321,4 +336,15 @@ with open(folder_apache_logs, 'r') as fp:
         counter_value_date += value
     
     print(f'Общее кол-во дат: {counter_value_date}')
+    
+    #print(len(list_ip_date))
+    print(f'Кол-во уникальных пар дата-время {len(set_ip_date)}')
 
+    counter_date.clear()
+
+    for d in set_date:
+        for ip in set_ip_date:
+            if ip.find(d) != -1:
+                counter_date[d] += 1
+    print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
+    save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар дата-время')
