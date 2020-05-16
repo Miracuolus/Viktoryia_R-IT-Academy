@@ -182,7 +182,31 @@ def agents():
 request_agents = []
 
 
-def analysis(brousers, request_agents):
+date_brousers = dict()
+counter_dbrousers = collections.Counter()
+date_mobale_brousers = dict()
+counter_mbrousers = collections.Counter()
+date_searche_system = dict()
+counter_ssystem = collections.Counter()
+date_bots = dict()
+counter_bots = collections.Counter()
+
+
+def count_date_brousers(line, set_date, key, diction_f, count_f):
+    for date in set_date:
+        if line.find(date) != -1:
+            if not diction_f.get(date):
+                diction_f[date] = dict()
+            if not diction_f.get(date).get(key):
+                diction_f[date][key] = 0
+            diction_f[date][key] = diction_f.get(date).get(key) + 1
+            count_f[date] += 1
+            break
+
+
+
+
+def analysis(brousers, request_agents, line):
     for key in brousers.keys():
         if len(brousers.get(key)) != len(request_agents):
             continue
@@ -193,6 +217,8 @@ def analysis(brousers, request_agents):
                 break
         if is_find:
             count_brousers[key] = count_brousers.get(key) + 1
+            count_date_brousers(line, set_date, key, date_brousers, counter_dbrousers)
+            
 
 
 def analysis_mobile(brousers, line):
@@ -206,6 +232,8 @@ def analysis_mobile(brousers, line):
         if is_find:
             count_brousers[key] = count_brousers.get(key) + 1
             count_true += 1
+            count_date_brousers(line, set_date, key, date_mobale_brousers, counter_mbrousers)
+            
 
 
 def analysis_search_systems(count, brousers, line):
@@ -247,6 +275,18 @@ def ip_date(line):
     return set_ip_date
 
 
+def print_date_info(date_dict, count_info, string_info):
+    count = 0
+    for k in date_dict.keys():
+        print(f'{k} было зафиксированно запросов от следующих {string_info}: ')
+        print(date_dict[k])
+        for k2 in date_dict[k].keys():
+            count += date_dict[k][k2]
+
+    print(f'Общее кол-во запросов от {string_info} браузеров {count}')
+    print(f'Общее кол-во запросов от {string_info} браузеров по дням {dict(count_info)}')
+
+
 l_count_del = 0
 with open(folder_apache_logs, 'r') as fp:
     for line in fp.readlines():
@@ -257,6 +297,10 @@ with open(folder_apache_logs, 'r') as fp:
         date(line)  # список уникальной даты
 
         time(line)  # список даты и времени
+
+        ip_date(line)  # список IP и даты
+
+        #d_brousers(set_date) #*
 
         protocol(line)  # список протоколов
 
@@ -270,9 +314,9 @@ with open(folder_apache_logs, 'r') as fp:
         if agent is not None:
             l_count_del += 1
 
-        analysis(brousers, list_agent)
+        analysis(brousers, list_agent, line)
 
-        ip_date(line)  # список IP и даты 
+        
 
 
     set_bots_research = set()
@@ -322,7 +366,9 @@ with open(folder_apache_logs, 'r') as fp:
 
     save_data('information_system.txt', list_system,
               'Список информации от систем')
-    print('----------------------------------------------------------')
+    print('------------------------------------------------'\
+          'Информация о дате и IP-адресах'\
+          '------------------------------------------------')
     counter_date = collections.Counter()
     print(f'Список уникальных дат: {set_date}')
     for date in list_date:
@@ -348,3 +394,14 @@ with open(folder_apache_logs, 'r') as fp:
                 counter_date[d] += 1
     print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
     save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар дата-время')
+
+    #print(date_brousers)
+    print('------------------------------------------------'\
+          'Информация о дате и десктопных браузерах'\
+          '------------------------------------------------')
+    print_date_info(date_brousers, counter_dbrousers, 'десктопных')
+
+    print('------------------------------------------------'\
+          'Информация о дате и мобильных браузерах'\
+          '------------------------------------------------')
+    print_date_info(date_mobale_brousers, counter_mbrousers, 'мобильных')
