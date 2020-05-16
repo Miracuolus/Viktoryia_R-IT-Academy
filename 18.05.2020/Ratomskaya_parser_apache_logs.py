@@ -236,7 +236,7 @@ def analysis_mobile(brousers, line):
             
 
 
-def analysis_search_systems(count, brousers, line):
+def analysis_systems_bots(count, brousers, line, date_info, counter_info):
     for key in brousers.keys():
         is_find = True
         if line.find(brousers[key]) == -1:
@@ -244,7 +244,7 @@ def analysis_search_systems(count, brousers, line):
             continue
         if is_find:
             count[key] = count.get(key) + 1
-            count_date_brousers(line, set_date, key, date_searche_system, counter_ssystem)
+            count_date_brousers(line, set_date, key, date_info, counter_info)
 
 
 def find_agent(agents, value):
@@ -312,8 +312,8 @@ with open(folder_apache_logs, 'r') as fp:
 
         system()  # информация о системе
         analysis_mobile(mobile_brousers, line)
-        analysis_search_systems(count_search, search_systems, line)
-        analysis_search_systems(count_bots, bots, line)
+        analysis_systems_bots(count_search, search_systems, line, date_searche_system, counter_ssystem)
+        analysis_systems_bots(count_bots, bots, line, date_bots, counter_bots)
         agent = agents()
         if agent is not None:
             l_count_del += 1
@@ -405,3 +405,5 @@ with open(folder_apache_logs, 'r') as fp:
     print_date_info(date_mobale_brousers, counter_mbrousers, 'мобильных браузерах')
 
     print_date_info(date_searche_system, counter_ssystem, 'поисковых систем')
+
+    print_date_info(date_bots, counter_bots, 'ботов')
