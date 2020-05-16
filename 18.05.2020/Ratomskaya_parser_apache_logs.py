@@ -1,5 +1,6 @@
 import re
 import os
+import collections
 
 f = 'apache_logs.txt'
 
@@ -90,14 +91,19 @@ def unic_address(line):
     return unic_ip_addresses
 
 
-list_time = []
-
+list_date = []
 set_date = set()
+
+
 def date(line):
     date_time = pattern_times.findall(line)
     date = re.findall(r'\d+\/\w+\/\d+',date_time[0])
+    list_date.append(date[0])
     set_date.add(date[0])
     return set_date
+
+
+list_time = []
 
 
 def time(line):
@@ -302,5 +308,17 @@ with open(folder_apache_logs, 'r') as fp:
 
     save_data('information_system.txt', list_system,
               'Список информации от систем')
+    print('----------------------------------------------------------')
+    counter_date = collections.Counter()
+    print(f'Список уникальных дат: {set_date}')
+    for date in list_date:
+        counter_date[date] += 1
     
-    print(set_date)
+    print(f'Количество упоминаний даты: {dict(counter_date)}')
+
+    counter_value_date = 0
+    for value in counter_date.values():
+        counter_value_date += value
+    
+    print(f'Общее кол-во дат: {counter_value_date}')
+
