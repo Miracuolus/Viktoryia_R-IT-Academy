@@ -5,6 +5,8 @@ import datetime
 import pytz
 
 
+os.makedirs('reports', exist_ok=True)
+
 dtime_object_set = set()
 
 
