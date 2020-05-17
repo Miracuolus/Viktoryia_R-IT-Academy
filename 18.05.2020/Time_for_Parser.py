@@ -1,4 +1,4 @@
-import Ratomskaya_parser_apache_logs as Parser
+from Parser_Apache_logs import Ratomskaya_parser_apache_logs as Parser
 import collections
 import datetime
 import pytz
@@ -40,7 +40,20 @@ print(f'Список уникальных дат: {dtime_object_set}')
 for date in Parser.list_date:
     counter_date[date] += 1
 
+#
+time = []
+tz = set()
+utc = set()
+for t in range(0, len(Parser.list_time)):
+    d_t = datetime.datetime.strptime(Parser.list_time[t], '%d/%B/%Y:%H:%M:%S %z')
+    tz.add(str(d_t.tzname()))
+    utc.add(str(d_t.utcoffset()))
+    time.append(str(d_t))
     
+Parser.save_data('date-time_not_string.txt', time, 'Список даты и времени (альтернативная запись)')
+print(f'Дата выводится в формате {tz}. {tz} = {utc}')
+#
+   
 print(f'Количество упоминаний даты: {dict(counter_date)}')
 counter_value_date = 0
 for value in counter_date.values():
@@ -57,6 +70,7 @@ for d in Parser.set_date:
     for ip in Parser.set_ip_date:
         if ip.find(d) != -1:
             counter_date[d] += 1
+
 print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
 Parser.save_data('unic_ip_date.txt', Parser.set_ip_date, 'Список уникальных пар IP-дата')
 
@@ -68,15 +82,3 @@ print_date_info(Parser.date_mobale_brousers, Parser.counter_mbrousers, 'моби
 print_date_info(Parser.date_searche_system, Parser.counter_ssystem, 'поисковых систем')
 
 print_date_info(Parser.date_bots, Parser.counter_bots, 'ботов')
-
-time = []
-tz = set()
-utc = set()
-for t in Parser.list_time:
-    d_t = datetime.datetime.strptime(Parser.list_time[0], '%d/%B/%Y:%H:%M:%S %z')
-    tz.add(str(d_t.tzname()))
-    utc.add(str(d_t.utcoffset()))
-    time.append(str(d_t))
-    
-Parser.save_data('date-time_not_string.txt', time, 'Список даты и времени (альтернативная запись)')
-print(f'Дата выводится в формате {tz} = {utc}')
