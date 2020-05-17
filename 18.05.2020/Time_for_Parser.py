@@ -33,7 +33,7 @@ def print_date_info(date_dict, count_info, string_info):
     save_reports(name_save, 'Общее кол-во запросов по дням от ', dict(count_info), string_info)
 
 
-def save_reports(file_name, strings, list_date, var='', last=False):
+def save_reports(file_name, strings, list_date, var=''):
     folder_logs = os.path.abspath('.\\reports\\' + file_name)
     with open(folder_logs, 'a') as report:
         if type(list_date) == dict:
@@ -59,11 +59,6 @@ def save_reports(file_name, strings, list_date, var='', last=False):
             for value in list_date:
                 report.write(value)
                 report.write('\n')
-        if last:
-            size_bytes = os.path.getsize(folder_logs)
-            if size_bytes != 0:
-                print(f'{strings} сохранен в файл {file_name} размером '
-                    f'{size_bytes} байт')
 
 
 #  Создание имени файла отчета(текущее дата/время + имя лога(без расширения) + .txt)
