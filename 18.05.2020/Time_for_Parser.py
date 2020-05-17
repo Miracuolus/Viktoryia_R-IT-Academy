@@ -1,4 +1,5 @@
 from Parser_Apache_logs import Ratomskaya_parser_apache_logs as Parser
+import os
 import collections
 import datetime
 import pytz
@@ -25,17 +26,64 @@ def print_date_info(date_dict, count_info, string_info):
         for k2 in date_dict[k].keys():
             count += date_dict[k][k2]
 
+    save_reports(name_save, 'Было зафиксированно запросов от ', dict(date_dict), string_info)
     print(f'Общее кол-во запросов от {string_info} = {count}')
+    save_reports(name_save, 'Общее кол-во запросов от ', str(count), string_info)
     print(f'Общее кол-во запросов от {string_info} по дням {dict(count_info)}')
+    save_reports(name_save, 'Общее кол-во запросов по дням от ', dict(count_info), string_info)
 
-def main(debug_save=True):
+
+def save_reports(file_name, strings, list_date, var='', last=False):
+    folder_logs = os.path.abspath('.\\reports\\' + file_name)
+    with open(folder_logs, 'a') as report:
+        if type(list_date) == dict:
+            report.write(strings)
+            report.write(var)
+            report.write(': ')
+            report.write('\n')
+            for k in list_date.keys():
+                report.write(k)
+                report.write(': ')
+                report.write(str(list_date.get(k)))
+                report.write('\n')
+        elif type(list_date) == str:
+            report.write(strings)
+            report.write(var)
+            report.write(': ')
+            report.write(list_date)
+            report.write('\n')
+        else:
+            report.write(strings)
+            report.write(': ')
+            report.write('\n')
+            for value in list_date:
+                report.write(value)
+                report.write('\n')
+        if last:
+            size_bytes = os.path.getsize(folder_logs)
+            if size_bytes != 0:
+                print(f'{strings} сохранен в файл {file_name} размером '
+                    f'{size_bytes} байт')
+
+
+#  Создание имени файла отчета(текущее дата/время + имя лога(без расширения) + .txt)
+time = datetime.datetime.now()
+direct = os.path.abspath(__file__)
+time = str(time)
+time = time.replace(':', '_')
+name_save = time[0: 19] + '_' + Parser.f + '.txt'
+
+
+def main(save_logs=True):
     Parser.main(debug_msg=False, debug_save=False)
     print('------------------------------------------------'\
         'Информация о дате и IP-адресах'\
         '------------------------------------------------')
+
     translate_f_t_time(Parser.set_date)
     counter_date = collections.Counter()
     print(f'Список уникальных дат: {dtime_object_set}')
+    save_reports(name_save, 'Список уникальных дат', dtime_object_set)
     for date in Parser.list_date:
         counter_date[date] += 1
 
@@ -49,20 +97,23 @@ def main(debug_save=True):
         utc.add(str(d_t.utcoffset()))
         time.append(str(d_t))
         
-    if debug_save:
+    if save_logs:
         Parser.save_data('date-time_not_string.txt', time, 'Список даты и времени (альтернативная запись)')
     print(f'Дата выводится в формате {tz}. {tz} = {utc}')
     #
     
     print(f'Количество упоминаний даты: {dict(counter_date)}')
+    save_reports(name_save, 'Количество упоминаний даты', dict(counter_date))
     counter_value_date = 0
     for value in counter_date.values():
         counter_value_date += value
         
     print(f'Общее кол-во дат: {counter_value_date}')
+    save_reports(name_save, 'Общее кол-во дат', str(counter_value_date))
         
     #print(len(list_ip_date))
     print(f'Кол-во уникальных пар дата-время {len(Parser.set_ip_date)}')
+    save_reports(name_save, 'Кол-во уникальных пар дата-время', str(len(Parser.set_ip_date)))
 
     counter_date.clear()
 
@@ -72,7 +123,8 @@ def main(debug_save=True):
                 counter_date[d] += 1
 
     print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
-    if debug_save:
+    save_reports(name_save, 'Количество уникальных запросов по датам', dict(counter_date))
+    if save_logs:
         Parser.save_data('unic_ip_date.txt', Parser.set_ip_date, 'Список уникальных пар IP-дата')
 
     #print(date_brousers)
@@ -83,6 +135,15 @@ def main(debug_save=True):
     print_date_info(Parser.date_searche_system, Parser.counter_ssystem, 'поисковых систем')
 
     print_date_info(Parser.date_bots, Parser.counter_bots, 'ботов')
+
+    folder_logs = os.path.abspath('.\\reports\\' + name_save)
+    size_bytes = os.path.getsize(folder_logs)
+    folder_logs = os.path.split(folder_logs)
+    if size_bytes != 0:
+        print(f'Отчет по статистике сохранен сохранен в файл {name_save} размером '
+              f'{size_bytes} байт в папку {folder_logs[0]}')
+
+
 
 if __name__ == "__main__":
     main()
