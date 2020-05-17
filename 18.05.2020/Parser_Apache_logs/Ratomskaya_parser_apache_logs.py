@@ -5,6 +5,8 @@ import collections
 
 f = 'apache_logs.txt'
 
+os.makedirs('logs', exist_ok=True)
+
 path_file_apache = os.path.abspath('.\\apache_logs\\' + f)
 folder_apache_logs = os.path.abspath(path_file_apache)
 
