@@ -5,10 +5,11 @@ import datetime
 import pytz
 
 
-Parser.f = 'apache_logs.txt'
 
-Parser.path_file_apache = os.path.abspath('.\\apache_logs\\' + Parser.f)
-Parser.folder_apache_logs = os.path.abspath(Parser.path_file_apache)
+script_path = os.path.dirname(__file__)
+Parser.path_file_apache = script_path + '\\apache_logs\\' + Parser.f
+
+folder_apache_logs = os.path.abspath(Parser.path_file_apache)
 
 
 dtime_object_set = set()

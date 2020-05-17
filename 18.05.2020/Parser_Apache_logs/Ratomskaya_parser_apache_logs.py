@@ -4,8 +4,9 @@ import collections
 
 
 f = 'apache_logs.txt'
+script_path = os.path.dirname(__file__)
+path_file_apache = os.path.join(script_path, '..\\apache_logs\\' + f)
 
-path_file_apache = os.path.abspath('..\\apache_logs\\' + f)
 folder_apache_logs = os.path.abspath(path_file_apache)
 
 brousers = {'Mozilla Firefox': ['Gecko', 'Firefox'],
