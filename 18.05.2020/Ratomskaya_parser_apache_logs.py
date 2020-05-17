@@ -296,14 +296,14 @@ def print_date_info(date_dict, count_info, string_info):
     print(f'Общее кол-во запросов от {string_info} по дням {dict(count_info)}')
 
 
-dtime_object = []
+dtime_object_set = set()
 
 
 def translate_f_t_time(list_date):
     for i in list_date:
         dtime = datetime.datetime.strptime(i, '%d/%B/%Y')
-        dtime_object.append(datetime.datetime.strftime(dtime, '%Y.%m.%d'))
-    return dtime_object
+        dtime_object_set.add(datetime.datetime.strftime(dtime, '%Y.%m.%d'))
+    return dtime_object_set
 
 
 l_count_del = 0
@@ -388,7 +388,7 @@ with open(folder_apache_logs, 'r') as fp:
           '------------------------------------------------')
     translate_f_t_time(set_date)
     counter_date = collections.Counter()
-    print(f'Список уникальных дат: {dtime_object}')
+    print(f'Список уникальных дат: {dtime_object_set}')
     for date in list_date:
         counter_date[date] += 1
 
@@ -411,7 +411,7 @@ with open(folder_apache_logs, 'r') as fp:
             if ip.find(d) != -1:
                 counter_date[d] += 1
     print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
-    save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар дата-время')
+    save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар IP-дата')
 
     #print(date_brousers)
     print_date_info(date_brousers, counter_dbrousers, 'десктопных браузерах')
@@ -421,3 +421,16 @@ with open(folder_apache_logs, 'r') as fp:
     print_date_info(date_searche_system, counter_ssystem, 'поисковых систем')
 
     print_date_info(date_bots, counter_bots, 'ботов')
+
+    print(list_time[0])
+    time = []
+    tz = set()
+    utc = set()
+    for t in list_time:
+        d_t = datetime.datetime.strptime(list_time[0], '%d/%B/%Y:%H:%M:%S %z')
+        tz.add(str(d_t.tzname()))
+        utc.add(str(d_t.utcoffset()))
+        time.append(str(d_t))
+    
+    save_data('date-time_not_string.txt', time, 'Список даты и времени (альтернативная запись)')
+    print(f'Дата выводится в формате {tz} = {utc}')
