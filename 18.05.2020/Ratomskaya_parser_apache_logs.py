@@ -272,6 +272,8 @@ def save_data(file_name, list_values, strings):
 list_ip_date = []
 set_ip_date = set()
 pattern_ip_date = re.compile(r'\d+\.\d+\.\d+\.\d+\s\-\s\-\s\[\d+\/\w+\/\d+')
+
+
 def ip_date(line):
     ip_date = pattern_ip_date.findall(line)
     list_ip_date.append(ip_date[0])
@@ -298,7 +300,6 @@ dtime_object = []
 
 
 def translate_f_t_time(list_date):
-    
     for i in list_date:
         dtime = datetime.datetime.strptime(i, '%d/%B/%Y')
         dtime_object.append(datetime.datetime.strftime(dtime, '%Y.%m.%d'))
@@ -401,7 +402,7 @@ with open(folder_apache_logs, 'r') as fp:
     print(f'Общее кол-во дат: {counter_value_date}')
     
     #print(len(list_ip_date))
-    print(f'Кол-во уникальных пар дата-время {len(dtime_object)}')
+    print(f'Кол-во уникальных пар дата-время {len(set_ip_date)}')
 
     counter_date.clear()
 
