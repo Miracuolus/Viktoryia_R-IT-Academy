@@ -5,8 +5,6 @@ import collections
 
 f = 'apache_logs.txt'
 
-os.makedirs('logs', exist_ok=True)
-
 path_file_apache = os.path.abspath('.\\apache_logs\\' + f)
 folder_apache_logs = os.path.abspath(path_file_apache)
 
@@ -270,6 +268,7 @@ def ip_date(line):
 
 
 def save_data(file_name, list_values, strings):
+    os.makedirs('logs', exist_ok=True)
     folder_logs = os.path.abspath('.\\logs\\' + file_name)
     fl = open(folder_logs, 'w')
     for value in list_values:
