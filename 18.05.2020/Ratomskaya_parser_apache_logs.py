@@ -1,6 +1,9 @@
 import re
 import os
 import collections
+import datetime
+import pytz #*
+
 
 f = 'apache_logs.txt'
 
@@ -291,6 +294,17 @@ def print_date_info(date_dict, count_info, string_info):
     print(f'Общее кол-во запросов от {string_info} по дням {dict(count_info)}')
 
 
+dtime_object = []
+
+
+def translate_f_t_time(list_date):
+    
+    for i in list_date:
+        dtime = datetime.datetime.strptime(i, '%d/%B/%Y')
+        dtime_object.append(datetime.datetime.strftime(dtime, '%Y.%m.%d'))
+    return dtime_object
+
+
 l_count_del = 0
 with open(folder_apache_logs, 'r') as fp:
     for line in fp.readlines():
@@ -303,8 +317,6 @@ with open(folder_apache_logs, 'r') as fp:
         time(line)  # список даты и времени
 
         ip_date(line)  # список IP и даты
-
-        #d_brousers(set_date) #*
 
         protocol(line)  # список протоколов
 
@@ -373,8 +385,9 @@ with open(folder_apache_logs, 'r') as fp:
     print('------------------------------------------------'\
           'Информация о дате и IP-адресах'\
           '------------------------------------------------')
+    translate_f_t_time(set_date)
     counter_date = collections.Counter()
-    print(f'Список уникальных дат: {set_date}')
+    print(f'Список уникальных дат: {dtime_object}')
     for date in list_date:
         counter_date[date] += 1
 
@@ -388,7 +401,7 @@ with open(folder_apache_logs, 'r') as fp:
     print(f'Общее кол-во дат: {counter_value_date}')
     
     #print(len(list_ip_date))
-    print(f'Кол-во уникальных пар дата-время {len(set_ip_date)}')
+    print(f'Кол-во уникальных пар дата-время {len(dtime_object)}')
 
     counter_date.clear()
 
