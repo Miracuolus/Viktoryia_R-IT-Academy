@@ -1,8 +1,6 @@
 import re
 import os
 import collections
-import datetime
-import pytz #*
 
 
 f = 'apache_logs.txt'
@@ -60,7 +58,7 @@ pattern_unic_address = re.compile(r' - - ')
 pattern_times = re.compile(r'\d+\/\w+\/\d+\:\d+\:\d+\:\d+\s\+\d+')
 
 
-def pattern_protocols():
+def pattern_protocols(line):
     protocol = pattern_unic_address.split(line)
     protocol = pattern_times.split(protocol[1])
     protocol = re.split(r'\]\s\"', protocol[1])
@@ -68,8 +66,8 @@ def pattern_protocols():
     return protocol
 
 
-def pattern_system():
-    system = pattern_protocols()
+def pattern_system(line):
+    system = pattern_protocols(line)
     if system[1][0] == '-':
         sys = re.split(r'\-\s\"', system[1])
     else:
@@ -77,8 +75,8 @@ def pattern_system():
     return sys
 
 
-def pattern_agents():
-    agents = pattern_system()
+def pattern_agents(line):
+    agents = pattern_system(line)
     if len(agents) == 2:
         agent = re.split(r'\w+\/.+\s\(.+\)\s', agents[1])
     else:
@@ -119,7 +117,7 @@ list_protocol = []
 
 
 def protocol(line):
-    protocol = pattern_protocols()
+    protocol = pattern_protocols(line)
     list_protocol.append(protocol[0])
     return list_protocol
 
@@ -127,8 +125,8 @@ list_referers = []
 not_url = 0
 
 
-def referer():
-    protocol = pattern_protocols()
+def referer(line):
+    protocol = pattern_protocols(line)
     if protocol[1][0] == '-':
         global not_url
         not_url += 1
@@ -140,8 +138,8 @@ list_system = []
 no_inform_syst = 0
 
 
-def system():
-    sys = pattern_system()
+def system(line):
+    sys = pattern_system(line)
     if len(sys) == 2:
         system = re.findall(r'\w+\/.+\s\(.+\)\s', sys[1])
     else:
@@ -157,10 +155,10 @@ list_bots_research = []
 count_true = 0
 
 
-def agents():
+def agents(line):
     global list_agent
     global count_true
-    agent = pattern_agents()
+    agent = pattern_agents(line)
     if len(agent) == 2:
         count_true += 1
         agents = re.findall(r'\w+.+\n', agent[1])
@@ -257,18 +255,6 @@ def find_agent(agents, value):
     return False
 
 
-def save_data(file_name, list_values, strings):
-    folder_logs = os.path.abspath('.\\logs\\' + file_name)
-    fl = open(folder_logs, 'w')
-    for value in list_values:
-        fl.write(value)
-        fl.write('\n')
-    size_bytes = os.path.getsize(folder_logs)
-    if size_bytes != 0:
-        print(f'{strings} сохранен в файл {file_name} размером '
-              f'{size_bytes} байт')
-
-
 list_ip_date = []
 set_ip_date = set()
 pattern_ip_date = re.compile(r'\d+\.\d+\.\d+\.\d+\s\-\s\-\s\[\d+\/\w+\/\d+')
@@ -281,156 +267,96 @@ def ip_date(line):
     return set_ip_date
 
 
-def print_date_info(date_dict, count_info, string_info):
-    print(f'------------------------------------------------',
-          f'Информация о дате и {string_info}',
-          f'------------------------------------------------')
-    count = 0
-    for k in date_dict.keys():
-        print(f'{k} было зафиксированно запросов от следующих {string_info}:')
-        print(f'{date_dict[k]}\n')
-        for k2 in date_dict[k].keys():
-            count += date_dict[k][k2]
-
-    print(f'Общее кол-во запросов от {string_info} = {count}')
-    print(f'Общее кол-во запросов от {string_info} по дням {dict(count_info)}')
+def save_data(file_name, list_values, strings):
+    folder_logs = os.path.abspath('.\\logs\\' + file_name)
+    fl = open(folder_logs, 'w')
+    for value in list_values:
+        fl.write(value)
+        fl.write('\n')
+    size_bytes = os.path.getsize(folder_logs)
+    if size_bytes != 0:
+        print(f'{strings} сохранен в файл {file_name} размером '
+              f'{size_bytes} байт')
 
 
-dtime_object_set = set()
+def main():
+    l_count_del = 0
+    with open(folder_apache_logs, 'r') as fp:
+        for line in fp.readlines():
+            global all_request_count
+            all_request_count += 1  # кол-во запросов
 
+            unic_ip = unic_address(line)  # список уникальных IP
 
-def translate_f_t_time(list_date):
-    for i in list_date:
-        dtime = datetime.datetime.strptime(i, '%d/%B/%Y')
-        dtime_object_set.add(datetime.datetime.strftime(dtime, '%Y.%m.%d'))
-    return dtime_object_set
+            date(line)  # список уникальной даты
 
+            time(line)  # список даты и времени
 
-l_count_del = 0
-with open(folder_apache_logs, 'r') as fp:
-    for line in fp.readlines():
-        all_request_count += 1  # кол-во запросов
+            ip_date(line)  # список IP и даты
 
-        unic_ip = unic_address(line)  # список уникальных IP
+            protocol(line)  # список протоколов
 
-        date(line)  # список уникальной даты
+            referer(line)  # список URL-запросов
 
-        time(line)  # список даты и времени
+            system(line)  # информация о системе
+            analysis_mobile(mobile_brousers, line)
+            analysis_systems_bots(count_search, search_systems, line, date_searche_system, counter_ssystem)
+            analysis_systems_bots(count_bots, bots, line, date_bots, counter_bots)
+            agent = agents(line)
+            if agent is not None:
+                l_count_del += 1
 
-        ip_date(line)  # список IP и даты
+            analysis(brousers, list_agent, line)
 
-        protocol(line)  # список протоколов
+        set_bots_research = set()
+        for i in list_bots_research:
+            bot = re.split(r'\"\n', i)
+            bot = re.split(r'\;', bot[0])
+            bot = re.split(r'\)', bot[0])
+            set_bots_research.add(bot[0])
 
-        referer()  # список URL-запросов
+        print(f'Список уникальных запросов в файле {f}: {unic_ip}')
+        print(f'Количество запросов в файле {f} = {all_request_count}')
+        print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
 
-        system()  # информация о системе
-        analysis_mobile(mobile_brousers, line)
-        analysis_systems_bots(count_search, search_systems, line, date_searche_system, counter_ssystem)
-        analysis_systems_bots(count_bots, bots, line, date_bots, counter_bots)
-        agent = agents()
-        if agent is not None:
-            l_count_del += 1
+        print(f'Кол-во URL-запроса: {len(list_referers)}')
+        print(f'Нет URL-запроса: {not_url}')
+        print(f'Известно информации от систем: {len(list_system)}')
+        print(f'Нет информации о системе: {no_inform_syst}')
 
-        analysis(brousers, list_agent, line)
+        print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
+            f'{count_brousers}')
+        num = 0
+        for key in count_brousers.keys():
+            num += count_brousers.get(key)
+        # print(num)
 
-        
+        print(f'Количество запросов от поисковых систем:\n'
+            f'{count_search}')
+        num2 = 0
+        for key in count_search.keys():
+            num2 += count_search.get(key)
+        # print(num2)
 
+        print(f'Список ботов и кол-во их запросов:\n'
+            f'{count_bots}')
+        num3 = 0
+        for key in count_bots.keys():
+            num3 += count_bots.get(key)
+        # print(num3)
 
-    set_bots_research = set()
-    for i in list_bots_research:
-        bot = re.split(r'\"\n', i)
-        bot = re.split(r'\;', bot[0])
-        bot = re.split(r'\)', bot[0])
-        set_bots_research.add(bot[0])
+        save_data('unic_ip.txt', unic_ip, 'Список уникальных ip')
 
-    print(f'Список уникальных запросов в файле {f}: {unic_ip}')
-    print(f'Количество запросов в файле {f} = {all_request_count}')
-    print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
+        save_data('date_time.txt', list_time, 'Список даты и времени')
 
-    print(f'Кол-во URL-запроса: {len(list_referers)}')
-    print(f'Нет URL-запроса: {not_url}')
-    print(f'Известно информации от систем: {len(list_system)}')
-    print(f'Нет информации о системе: {no_inform_syst}')
+        save_data('protocols.txt', list_protocol, 'Список протоколов')
 
-    print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
-          f'{count_brousers}')
-    num = 0
-    for key in count_brousers.keys():
-        num += count_brousers.get(key)
-    # print(num)
+        save_data('referers.txt', list_referers, 'Список запросов')
 
-    print(f'Количество запросов от поисковых систем:\n'
-          f'{count_search}')
-    num2 = 0
-    for key in count_search.keys():
-        num2 += count_search.get(key)
-    # print(num2)
-
-    print(f'Список ботов и кол-во их запросов:\n'
-          f'{count_bots}')
-    num3 = 0
-    for key in count_bots.keys():
-        num3 += count_bots.get(key)
-    # print(num3)
-
-    save_data('unic_ip.txt', unic_ip, 'Список уникальных ip')
-
-    save_data('date_time.txt', list_time, 'Список даты и времени')
-
-    save_data('protocols.txt', list_protocol, 'Список протоколов')
-
-    save_data('referers.txt', list_referers, 'Список запросов')
-
-    save_data('information_system.txt', list_system,
-              'Список информации от систем')
-    print('------------------------------------------------'\
-          'Информация о дате и IP-адресах'\
-          '------------------------------------------------')
-    translate_f_t_time(set_date)
-    counter_date = collections.Counter()
-    print(f'Список уникальных дат: {dtime_object_set}')
-    for date in list_date:
-        counter_date[date] += 1
-
+        save_data('information_system.txt', list_system,
+                'Список информации от систем')
     
-    print(f'Количество упоминаний даты: {dict(counter_date)}')
 
-    counter_value_date = 0
-    for value in counter_date.values():
-        counter_value_date += value
-    
-    print(f'Общее кол-во дат: {counter_value_date}')
-    
-    #print(len(list_ip_date))
-    print(f'Кол-во уникальных пар дата-время {len(set_ip_date)}')
+if __name__ == "__main__":
+    main()
 
-    counter_date.clear()
-
-    for d in set_date:
-        for ip in set_ip_date:
-            if ip.find(d) != -1:
-                counter_date[d] += 1
-    print(f'Количество уникальных запросов по датам: {dict(counter_date)}')
-    save_data('unic_ip_date.txt', set_ip_date, 'Список уникальных пар IP-дата')
-
-    #print(date_brousers)
-    print_date_info(date_brousers, counter_dbrousers, 'десктопных браузерах')
-
-    print_date_info(date_mobale_brousers, counter_mbrousers, 'мобильных браузерах')
-
-    print_date_info(date_searche_system, counter_ssystem, 'поисковых систем')
-
-    print_date_info(date_bots, counter_bots, 'ботов')
-
-    print(list_time[0])
-    time = []
-    tz = set()
-    utc = set()
-    for t in list_time:
-        d_t = datetime.datetime.strptime(list_time[0], '%d/%B/%Y:%H:%M:%S %z')
-        tz.add(str(d_t.tzname()))
-        utc.add(str(d_t.utcoffset()))
-        time.append(str(d_t))
-    
-    save_data('date-time_not_string.txt', time, 'Список даты и времени (альтернативная запись)')
-    print(f'Дата выводится в формате {tz} = {utc}')
