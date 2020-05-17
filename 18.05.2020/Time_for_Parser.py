@@ -5,8 +5,6 @@ import datetime
 import pytz
 
 
-os.makedirs('reports', exist_ok=True)
-
 dtime_object_set = set()
 
 
@@ -36,6 +34,7 @@ def print_date_info(date_dict, count_info, string_info):
 
 
 def save_reports(file_name, strings, list_date, var=''):
+    os.makedirs('reports', exist_ok=True)
     folder_logs = os.path.abspath('.\\reports\\' + file_name)
     with open(folder_logs, 'a') as report:
         if type(list_date) == dict:
