@@ -279,7 +279,7 @@ def save_data(file_name, list_values, strings):
               f'{size_bytes} байт')
 
 
-def main():
+def main(*, debug_msg=True, debug_save=True):
     l_count_del = 0
     with open(folder_apache_logs, 'r') as fp:
         for line in fp.readlines():
@@ -315,48 +315,47 @@ def main():
             bot = re.split(r'\)', bot[0])
             set_bots_research.add(bot[0])
 
-        print(f'Список уникальных запросов в файле {f}: {unic_ip}')
-        print(f'Количество запросов в файле {f} = {all_request_count}')
-        print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
+        if debug_msg:
+            print(f'Список уникальных запросов в файле {f}: {unic_ip}')
+            print(f'Количество запросов в файле {f} = {all_request_count}')
+            print(f'Количество уникальных запросов в файле {f} = {len(unic_ip)}')
 
-        print(f'Кол-во URL-запроса: {len(list_referers)}')
-        print(f'Нет URL-запроса: {not_url}')
-        print(f'Известно информации от систем: {len(list_system)}')
-        print(f'Нет информации о системе: {no_inform_syst}')
+            print(f'Кол-во URL-запроса: {len(list_referers)}')
+            print(f'Нет URL-запроса: {not_url}')
+            print(f'Известно информации от систем: {len(list_system)}')
+            print(f'Нет информации о системе: {no_inform_syst}')
 
-        print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
-            f'{count_brousers}')
+            print(f'Количество запросов от браузеров, в том числе с мобильных:\n'
+                  f'{count_brousers}')
         num = 0
         for key in count_brousers.keys():
             num += count_brousers.get(key)
         # print(num)
 
-        print(f'Количество запросов от поисковых систем:\n'
-            f'{count_search}')
+        if debug_msg:
+            print(f'Количество запросов от поисковых систем:\n'
+                  f'{count_search}')
         num2 = 0
         for key in count_search.keys():
             num2 += count_search.get(key)
         # print(num2)
 
-        print(f'Список ботов и кол-во их запросов:\n'
-            f'{count_bots}')
+        if debug_msg:
+            print(f'Список ботов и кол-во их запросов:\n'
+                  f'{count_bots}')
         num3 = 0
         for key in count_bots.keys():
             num3 += count_bots.get(key)
         # print(num3)
 
-        save_data('unic_ip.txt', unic_ip, 'Список уникальных ip')
-
-        save_data('date_time.txt', list_time, 'Список даты и времени')
-
-        save_data('protocols.txt', list_protocol, 'Список протоколов')
-
-        save_data('referers.txt', list_referers, 'Список запросов')
-
-        save_data('information_system.txt', list_system,
-                'Список информации от систем')
+        if debug_save:
+            save_data('unic_ip.txt', unic_ip, 'Список уникальных ip')
+            save_data('date_time.txt', list_time, 'Список даты и времени')
+            save_data('protocols.txt', list_protocol, 'Список протоколов')
+            save_data('referers.txt', list_referers, 'Список запросов')
+            save_data('information_system.txt', list_system,
+                            'Список информации от систем')
     
 
 if __name__ == "__main__":
     main()
-
