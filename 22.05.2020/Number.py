@@ -1,6 +1,92 @@
 class Number:
+
+    symbol = '\u25A0'
+    #symbol = '#'
+    line = 7
+
     def __init__(self, number):
-        self.number = number
-    
-    def __str__(self):
-        return f'{self.number}'
+        if number == 0:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 1:
+            self.list_number = [f'  {self.symbol}',
+                                f' {self.symbol}{self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}']
+        if number == 2:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f' {self.symbol} ',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 3:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 4:
+            self.list_number = [f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}']
+        if number == 5:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 6:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 7:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f' {self.symbol} ',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}  ',
+                                f'{self.symbol}  ']
+        if number == 8:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}']
+        if number == 9:
+            self.list_number = [f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol} {self.symbol}',
+                                f'{self.symbol}{self.symbol}{self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}',
+                                f'  {self.symbol}']
+
+
+
+    def get_line(self, counter):
+        return self.list_number[counter]
