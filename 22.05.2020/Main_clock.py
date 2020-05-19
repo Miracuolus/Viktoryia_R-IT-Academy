@@ -4,10 +4,8 @@ import os
 from Number import *
 
 
-#print('\u25A0'*20)
-#print('\u25A0')
 list_numbers = []
-for i in range(0, 10):
+for i in range(0, 11):
     list_numbers.append(Number(i))
 while True:
     real_time = datetime.datetime.now()
@@ -19,10 +17,10 @@ while True:
     for count in range(0, Number.line):
         print(list_numbers[h//10].get_line(count), end=' ')
         print(list_numbers[h%10].get_line(count), end=' ')
-        print(' ', end=' ')
+        print(list_numbers[10].get_line(count), end=' ')  # разделитель
         print(list_numbers[m//10].get_line(count), end=' ')
         print(list_numbers[m%10].get_line(count), end=' ')
-        print(' ', end=' ')
+        print(list_numbers[10].get_line(count), end=' ')  # разделитель
         print(list_numbers[s//10].get_line(count), end=' ')
         print(list_numbers[s%10].get_line(count), end=' ')
         print('')
