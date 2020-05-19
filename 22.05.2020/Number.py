@@ -1,6 +1,3 @@
-import colorama
-
-colorama.init()
 class Number:
 
     symbol = '\u2593'
@@ -112,6 +109,16 @@ class Number:
                                 '        ',
                                 '        ',
                                 '   {0}{0}   '.format(self.symbol),
+                                '        ',
+                                '        ',
+                                '        ',
+                                '        ',
+                                '        ']
+        if number == 11:
+            self.list_number = ['        ',
+                                '        ',
+                                '        ',
+                                '        ',
                                 '        ',
                                 '   {0}{0}   '.format(self.symbol),
                                 '        ',

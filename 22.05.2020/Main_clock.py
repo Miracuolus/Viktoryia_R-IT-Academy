@@ -8,12 +8,13 @@ from termcolor import colored
 
 colorama.init()
 list_numbers = []
-for i in range(0, 11):
+for i in range(0, 12):
     list_numbers.append(Number(i))
+part1 = 1
+part2 = 1
 while True:
     style = random.randint(31, 36)
     print('\33[' + str(style) + 'm')
-    print('\033[6m')
     real_time = datetime.datetime.now()
     h = real_time.hour
     m = real_time.minute
@@ -21,12 +22,22 @@ while True:
     for count in range(0, Number.line):
         print(list_numbers[h//10].get_line(count), end=' ')
         print(list_numbers[h%10].get_line(count), end=' ')
-        print('\33[6m', list_numbers[10].get_line(count), end=' ')  # разделитель
+        if part1 == 1:
+            print(list_numbers[10].get_line(count), end=' ')  # разделитель
+            part1 = 2
+        elif part1 == 2:
+            print(list_numbers[11].get_line(count), end=' ')  # разделитель
+            part1 = 1
         print(list_numbers[m//10].get_line(count), end=' ')
         print(list_numbers[m%10].get_line(count), end=' ')
-        print(list_numbers[10].get_line(count), end=' ')  # разделитель
+        if part2 == 1:
+            print(list_numbers[11].get_line(count), end=' ')  # разделитель
+            part2 = 2
+        elif part2 == 2:
+            print(list_numbers[10].get_line(count), end=' ')  # разделитель
+            part2 = 1
         print(list_numbers[s//10].get_line(count), end=' ')
         print(list_numbers[s%10].get_line(count), end=' ')
         print('')
-    time.sleep(1)
+    time.sleep(0.5)
     os.system('cls')  # очистка консоли
