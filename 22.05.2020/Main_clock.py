@@ -4,7 +4,7 @@ import os
 from Number import *
 import random
 import colorama
-from termcolor import colored
+#from termcolor import colored
 
 colorama.init()
 list_numbers = []
@@ -13,12 +13,12 @@ for i in range(0, 12):
 part1 = 1
 part2 = 1
 while True:
-    style = random.randint(31, 36)
-    print('\33[' + str(style) + 'm')
     real_time = datetime.datetime.now()
     h = real_time.hour
     m = real_time.minute
     s = real_time.second
+    style = random.randint(31, 36)
+    print('\33[' + str(style) + 'm')
     for count in range(0, Number.line):
         print(list_numbers[h//10].get_line(count), end=' ')
         print(list_numbers[h%10].get_line(count), end=' ')

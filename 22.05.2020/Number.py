@@ -79,11 +79,11 @@ class Number:
                                 '      {0}{0}'.format(self.symbol),
                                 '      {0}{0}'.format(self.symbol),
                                 '      {0}{0}'.format(self.symbol),
-                                '{0}{0}{0}{0}{0}{0}{0}{0}'.format(self.symbol),
-                                '{0}{0}      '.format(self.symbol),
-                                '{0}{0}      '.format(self.symbol),
-                                '{0}{0}      '.format(self.symbol),
-                                '{0}{0}      '.format(self.symbol)]
+                                '   {0}{0}{0}{0}{0}'.format(self.symbol),
+                                '   {0}{0}   '.format(self.symbol),
+                                '   {0}{0}   '.format(self.symbol),
+                                '   {0}{0}   '.format(self.symbol),
+                                '   {0}{0}   '.format(self.symbol)]
         if number == 8:
             self.list_number = ['{0}{0}{0}{0}{0}{0}{0}{0}'.format(self.symbol),
                                 '{0}{0}    {0}{0}'.format(self.symbol),
@@ -124,6 +124,6 @@ class Number:
                                 '        ',
                                 '        ',
                                 '        ']
-        
+                
     def get_line(self, counter):
         return self.list_number[counter]
