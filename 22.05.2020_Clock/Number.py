@@ -104,26 +104,6 @@ class Number:
                                 '      {0}{0}'.format(self.symbol),
                                 '      {0}{0}'.format(self.symbol),
                                 '{0}{0}{0}{0}{0}{0}{0}{0}'.format(self.symbol)]
-        if number == 10:
-            self.list_number = ['        ',
-                                '        ',
-                                '        ',
-                                '   {0}{0}   '.format(self.symbol),
-                                '        ',
-                                '        ',
-                                '        ',
-                                '        ',
-                                '        ']
-        if number == 11:
-            self.list_number = ['        ',
-                                '        ',
-                                '        ',
-                                '        ',
-                                '        ',
-                                '   {0}{0}   '.format(self.symbol),
-                                '        ',
-                                '        ',
-                                '        ']
                 
     def get_line(self, counter):
         return self.list_number[counter]
