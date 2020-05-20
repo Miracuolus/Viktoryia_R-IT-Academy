@@ -32,7 +32,7 @@ while True:
         print(list_sep[part%len(list_sep)].get_line(count), end=' ')  # разделитель
         print(list_numbers[m//10].get_line(count), end=' ')
         print(list_numbers[m%10].get_line(count), end=' ')
-        print(list_sep[part%len(list_sep)].get_line(count), end=' ')  # разделитель
+        print(list_sep[len(list_sep) - 1 - part%len(list_sep)].get_line(count), end=' ')  # разделитель
         print(list_numbers[s//10].get_line(count), end=' ')
         print(list_numbers[s%10].get_line(count), end=' ')
         print('')
