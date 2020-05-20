@@ -2,42 +2,40 @@ import datetime
 import time
 import os
 from Number import *
+from Separator import *
 import random
 import colorama
 #from termcolor import colored
 
 colorama.init()
 list_numbers = []
-for i in range(0, 12):
+for i in range(0, 10):
     list_numbers.append(Number(i))
-part1 = 1
-part2 = 1
+list_sep = []
+for j in range(0, 3):
+    list_sep.append(Separator(j))
+part = 0
+tim_s = 0
+style = 36
 while True:
     real_time = datetime.datetime.now()
     h = real_time.hour
     m = real_time.minute
     s = real_time.second
-    style = random.randint(31, 36)
+    if tim_s != s:
+        style = random.randint(31, 36)
     print('\33[' + str(style) + 'm')
+    part += 1
     for count in range(0, Number.line):
         print(list_numbers[h//10].get_line(count), end=' ')
         print(list_numbers[h%10].get_line(count), end=' ')
-        if part1 == 1:
-            print(list_numbers[10].get_line(count), end=' ')  # разделитель
-            part1 = 2
-        elif part1 == 2:
-            print(list_numbers[11].get_line(count), end=' ')  # разделитель
-            part1 = 1
+        print(list_sep[part%len(list_sep)].get_line(count), end=' ')  # разделитель
         print(list_numbers[m//10].get_line(count), end=' ')
         print(list_numbers[m%10].get_line(count), end=' ')
-        if part2 == 1:
-            print(list_numbers[11].get_line(count), end=' ')  # разделитель
-            part2 = 2
-        elif part2 == 2:
-            print(list_numbers[10].get_line(count), end=' ')  # разделитель
-            part2 = 1
+        print(list_sep[part%len(list_sep)].get_line(count), end=' ')  # разделитель
         print(list_numbers[s//10].get_line(count), end=' ')
         print(list_numbers[s%10].get_line(count), end=' ')
         print('')
     time.sleep(0.5)
+    tim_s = s
     os.system('cls')  # очистка консоли
